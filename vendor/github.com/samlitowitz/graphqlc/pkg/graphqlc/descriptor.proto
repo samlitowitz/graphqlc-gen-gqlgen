@@ -1,0 +1,168 @@
+syntax = "proto3";
+
+package graphqlc;
+
+option go_package = "github.com/samlitowitz/graphqlc/pkg/graphqlc;graphqlc";
+
+// The protocol compiler can output a FileDescriptorSet containing the
+// .graphql file it parses.
+message FileDescriptorSet {
+    repeated FileDescriptorGraphql file = 1;
+}
+
+// Describe a complete .graphql file
+message FileDescriptorGraphql {
+    string name = 1; // file name, relative to root of source tree
+
+    // All top-level definitions in this file.
+    SchemaDescriptorProto schema = 2;
+    repeated ScalarTypeDefinitionDescriptorProto scalars = 3;
+    repeated ObjectTypeDefinitionDescriptorProto objects = 4;
+    repeated InterfaceTypeDefinitionDescriptorProto interfaces = 5;
+    repeated UnionTypeDefinitionDescriptorProto unions = 6;
+    repeated EnumTypeDefinitionDescriptorProto enums = 7;
+    repeated InputObjectTypeDefinitionDescriptorProto input_objects = 8;
+}
+
+message SchemaDescriptorProto {
+    repeated DirectiveDescriptorProto directives = 1;
+    ObjectTypeDefinitionDescriptorProto query = 2;
+    ObjectTypeDefinitionDescriptorProto mutation = 3;
+    ObjectTypeDefinitionDescriptorProto subscription = 4;
+}
+
+message ScalarTypeDefinitionDescriptorProto {
+    string description = 1;
+    string name = 2;
+    repeated DirectiveDescriptorProto directives = 3;
+}
+
+message ObjectTypeDefinitionDescriptorProto {
+    string description = 1;
+    string name = 2;
+    repeated InterfaceTypeDefinitionDescriptorProto implements = 3;
+    repeated DirectiveDescriptorProto directives = 4;
+    repeated FieldDefinitionDescriptorProto fields = 5;
+}
+
+message InterfaceTypeDefinitionDescriptorProto {
+    string description = 1;
+    string name = 2;
+    repeated DirectiveDescriptorProto directives = 3;
+    repeated FieldDefinitionDescriptorProto fields = 4;
+}
+
+message UnionTypeDefinitionDescriptorProto {
+    string description = 1;
+    string name = 2;
+    repeated DirectiveDescriptorProto directives = 3;
+    repeated NamedTypeDescriptorProto member_types = 4;
+}
+
+message EnumTypeDefinitionDescriptorProto {
+    string description = 1;
+    string name = 2;
+    repeated DirectiveDescriptorProto directives = 3;
+    repeated EnumValueDefinitionDescription values = 4;
+}
+
+message InputObjectTypeDefinitionDescriptorProto {
+    string description = 1;
+    string name = 2;
+    repeated DirectiveDescriptorProto directives = 3;
+    repeated InputValueDefinitionDescriptorProto fields = 4;
+}
+
+message EnumValueDefinitionDescription {
+    string description = 1;
+    string value = 2;
+    repeated DirectiveDescriptorProto directives = 3;
+}
+
+message FieldDefinitionDescriptorProto {
+    string description = 1;
+    string name = 2;
+    repeated InputValueDefinitionDescriptorProto arguments = 3;
+    TypeDescriptorProto type = 4;
+    repeated DirectiveDescriptorProto directives = 5;
+}
+
+message InputValueDefinitionDescriptorProto {
+    string description = 1;
+    string name = 2;
+    TypeDescriptorProto type = 3;
+    ValueDescriptorProto default_value = 4;
+    repeated DirectiveDescriptorProto directives = 5;
+}
+
+message TypeDescriptorProto {
+    oneof type {
+        NamedTypeDescriptorProto named_type = 1;
+        ListTypeDescriptorProto list_type = 2;
+        NonNullTypeDescriptorProto non_null_type = 3;
+    }
+}
+
+message NamedTypeDescriptorProto {
+    string name = 1;
+}
+
+message ListTypeDescriptorProto {
+    TypeDescriptorProto type = 1;
+}
+
+message NonNullTypeDescriptorProto {
+    oneof type {
+        NamedTypeDescriptorProto named_type = 1;
+        ListTypeDescriptorProto list_type = 2;
+    }
+}
+
+message DirectiveDescriptorProto {
+    string name = 1;
+    repeated ArgumentDescriptorProto arguments = 2;
+}
+
+message ArgumentDescriptorProto {
+    string name = 1;
+    ValueDescriptorProto value = 2;
+}
+
+message ValueDescriptorProto {
+    oneof value {
+        VariableDescriptorProto variable_value = 2;
+        int32 int_value = 3;
+        float float_value = 4;
+        bool boolean_value = 5;
+        string string_value = 6;
+        NullValueDescriptorProto null_value = 7;
+        EnumValueDescriptorProto enum_value = 8;
+        ListValueDescriptorProto list_value = 9;
+        ObjectValueDescriptorProto object_value = 10;
+    }
+}
+
+message VariableDescriptorProto {
+    string name = 1;
+}
+
+message NullValueDescriptorProto {
+    string value = 1;
+}
+
+message EnumValueDescriptorProto {
+    string value = 1;
+}
+
+message ListValueDescriptorProto {
+    repeated ValueDescriptorProto values = 1;
+}
+
+message ObjectValueDescriptorProto {
+    repeated ObjectFieldDescriptorProto fields = 1;
+}
+
+message ObjectFieldDescriptorProto {
+    string name = 1;
+    ValueDescriptorProto value = 2;
+}

@@ -1,0 +1,5 @@
+package graphqlc
+
+type NonNullTypeDescriptorProto_Type = isNonNullTypeDescriptorProto_Type
+type TypeDescriptorProto_Type = isTypeDescriptorProto_Type
+type ValueDescriptorProto_Value = isValueDescriptorProto_Value
