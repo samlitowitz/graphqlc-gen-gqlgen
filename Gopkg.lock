@@ -4,17 +4,23 @@
 [[projects]]
   name = "github.com/99designs/gqlgen"
   packages = [
+    "api",
     "client",
+    "cmd",
+    "codegen",
     "codegen/config",
     "codegen/templates",
     "complexity",
-    "example/starwars/generated",
-    "example/starwars/models",
     "graphql",
     "graphql/introspection",
     "handler",
     "internal/code",
-    "internal/imports"
+    "internal/imports",
+    "plugin",
+    "plugin/modelgen",
+    "plugin/resolvergen",
+    "plugin/servergen",
+    "plugin/stubgen"
   ]
   revision = "ea4652d223c441dc77b31882781ce08488763d67"
   version = "v0.9.0"
@@ -32,10 +38,31 @@
   version = "v1.1.1"
 
 [[projects]]
+  name = "github.com/go-chi/chi"
+  packages = ["."]
+  revision = "da24bba8dcd4021cafac38724bf10dccc97c3e36"
+  version = "v4.0.2"
+
+[[projects]]
+  name = "github.com/gogo/protobuf"
+  packages = [
+    "io",
+    "proto"
+  ]
+  revision = "ba06b47c162d49f2af050fb4c75bcbc86a159d5c"
+  version = "v1.2.1"
+
+[[projects]]
   name = "github.com/golang/protobuf"
   packages = ["proto"]
   revision = "b5d812f8a3706043e23a9cd5babf2e5423744d30"
   version = "v1.3.1"
+
+[[projects]]
+  name = "github.com/gorilla/mux"
+  packages = ["."]
+  revision = "ed099d42384823742bba0bf9a72b53b55c9e2e38"
+  version = "v1.7.2"
 
 [[projects]]
   name = "github.com/gorilla/websocket"
@@ -59,6 +86,25 @@
   version = "v1.1.2"
 
 [[projects]]
+  name = "github.com/opentracing/basictracer-go"
+  packages = [
+    ".",
+    "wire"
+  ]
+  revision = "1b32af207119a14b1b231d451df3ed04a72efebf"
+  version = "v1.0.0"
+
+[[projects]]
+  name = "github.com/opentracing/opentracing-go"
+  packages = [
+    ".",
+    "ext",
+    "log"
+  ]
+  revision = "659c90643e714681897ec2521c60567dd21da733"
+  version = "v1.1.0"
+
+[[projects]]
   name = "github.com/pkg/errors"
   packages = ["."]
   revision = "ba968bfe8b2f7e042a574c888954fccecfa385b4"
@@ -71,6 +117,12 @@
   version = "v1.0.0"
 
 [[projects]]
+  name = "github.com/rs/cors"
+  packages = ["."]
+  revision = "9a47f48565a795472d43519dd49aac781f3034fb"
+  version = "v1.6.0"
+
+[[projects]]
   branch = "master"
   name = "github.com/samlitowitz/graphqlc"
   packages = [
@@ -80,6 +132,18 @@
   revision = "f2f1d80a9e0eaffb075cfbe3d056f0bcd44ee4b6"
 
 [[projects]]
+  branch = "master"
+  name = "github.com/shurcooL/httpfs"
+  packages = ["vfsutil"]
+  revision = "74dc9339e414ad069a8d04bba7e7aafd08043a25"
+
+[[projects]]
+  branch = "master"
+  name = "github.com/shurcooL/vfsgen"
+  packages = ["."]
+  revision = "6a9ea43bcacdf716a5c1b38efff722c07adf0069"
+
+[[projects]]
   name = "github.com/stretchr/testify"
   packages = [
     "assert",
@@ -87,6 +151,12 @@
   ]
   revision = "ffdc059bfe9ce6a4e144ba849dbedead332c6053"
   version = "v1.3.0"
+
+[[projects]]
+  name = "github.com/urfave/cli"
+  packages = ["."]
+  revision = "cfb38830724cc34fedffe9a2a29fb54fa9169cd1"
+  version = "v1.20.0"
 
 [[projects]]
   name = "github.com/vektah/gqlparser"
@@ -126,9 +196,29 @@
   revision = "51d6538a90f86fe93ac480b35f37b2be17fef232"
   version = "v2.2.2"
 
+[[projects]]
+  branch = "master"
+  name = "sourcegraph.com/sourcegraph/appdash"
+  packages = [
+    ".",
+    "httptrace",
+    "internal/wire",
+    "opentracing",
+    "sqltrace",
+    "traceapp",
+    "traceapp/tmpl"
+  ]
+  revision = "d9ea5c54f7dc06dbdbbf854ec35176e520e6dfdf"
+
+[[projects]]
+  branch = "master"
+  name = "sourcegraph.com/sourcegraph/appdash-data"
+  packages = ["."]
+  revision = "73f23eafcf67cad684fba328dd545a116ac273ff"
+
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "f830b03dbd36a7bfbf8dfdcf6854cede4b0689fe25d33abc25a6ff27af9e9637"
+  inputs-digest = "efbeacef4fda737adbb6daf6adef14284c86de2b95bf3c2cc6c9a3524d527bd7"
   solver-name = "gps-cdcl"
   solver-version = 1

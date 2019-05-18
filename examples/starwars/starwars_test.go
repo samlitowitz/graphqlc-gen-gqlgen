@@ -5,10 +5,9 @@ import (
 	"testing"
 
 	"github.com/99designs/gqlgen/client"
-	// Fix to point to github.com/samlitowitz/graphql-gen-gqlgen/examples/
-	"github.com/99designs/gqlgen/example/starwars/generated"
 	"github.com/99designs/gqlgen/graphql/introspection"
 	"github.com/99designs/gqlgen/handler"
+	"github.com/samlitowitz/graphqlc-gen-gqlgen/examples/starwars/generated"
 	"github.com/stretchr/testify/require"
 )
 

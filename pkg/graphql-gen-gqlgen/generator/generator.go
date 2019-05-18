@@ -2,71 +2,19 @@ package generator
 
 import (
 	"bytes"
-	"go/build"
-	"io/ioutil"
+	"fmt"
+	"io"
 	"log"
 	"os"
-	"path/filepath"
-	"regexp"
-	"strconv"
 	"strings"
 
+	"github.com/99designs/gqlgen/api"
+
+	gqcmd "github.com/99designs/gqlgen/cmd"
 	"github.com/99designs/gqlgen/codegen/config"
+	"github.com/99designs/gqlgen/plugin/stubgen"
 	"github.com/samlitowitz/graphqlc/pkg/graphqlc/compiler"
 )
-
-// A GoImportPath is the import path of a Go package. e.g., "google.golang.org/genproto/protobuf".
-type GoImportPath string
-
-func (p GoImportPath) String() string { return strconv.Quote(string(p)) }
-
-// A GoPackageName is the name of a Go package. e.g., "protobuf".
-type GoPackageName string
-
-type common struct {
-	file *FileDescriptor
-}
-
-func (c *common) GoImportPath() GoImportPath {
-	return c.file.importPath
-}
-
-func (c *common) File() *FileDescriptor { return c.file }
-
-type EnumDescriptor struct{}
-
-type InterfaceDescriptor struct{}
-
-type StructDescriptor struct{}
-
-type FileDescriptor struct {
-	// MODEL FILE GENERATION
-	// imports
-	// interfaces (GraphQL interfaces and unions)
-	// structs (GraphQL input objects and objects)
-	// enums (GraphQL enums)
-
-	// RESOLVER FILE GENERATE
-	// imports
-	// typed resolver struct
-
-	exported map[Object][]symbol
-
-	name        string
-	importPath  GoImportPath
-	packageName GoPackageName
-	doNotEdit   bool // Add do not edit warning
-}
-
-type symbol interface {
-	GenerateAlias(g *Generator, filename string, pkg GoPackageName)
-}
-
-type Object interface {
-	GoImportPath() GoImportPath
-	TypeName() string
-	File() *FileDescriptor
-}
 
 type Generator struct {
 	*bytes.Buffer
@@ -75,10 +23,11 @@ type Generator struct {
 
 	Param map[string]string // Command-line parameters
 
-	gqlgenConfig *config.Config // gqlgen configuration
-	genFiles     []*FileDescriptor
-
-	gopaths []string // All src/ directories in default and defined gopaths
+	gqlgenConfig      *config.Config // gqlgen configuration
+	serverFileName    string         // file name for gqlgen server output
+	stubFileName      string         // file name for gqlgen stub output
+	overwriteResolver bool
+	overwriteServer   bool
 }
 
 func New() *Generator {
@@ -86,12 +35,6 @@ func New() *Generator {
 	g.Buffer = new(bytes.Buffer)
 	g.Request = new(compiler.CodeGeneratorRequest)
 	g.Response = new(compiler.CodeGeneratorResponse)
-
-	g.gopaths = filepath.SplitList(build.Default.GOPATH)
-	for i, p := range g.gopaths {
-		g.gopaths[i] = filepath.ToSlash(filepath.Join(p, "src"))
-	}
-
 	return g
 }
 
@@ -127,112 +70,112 @@ func (g *Generator) CommandLineArguments(parameter string) {
 				g.Error(err)
 			}
 			g.gqlgenConfig = config
+		case "overwriteResolver":
+			switch v {
+			case "true":
+				g.overwriteResolver = true
+			case "false":
+				g.overwriteResolver = false
+			default:
+				g.Fail(fmt.Sprintf(`unknown %q, want "true" or "false"`, v))
+			}
+		case "overwriteServer":
+			switch v {
+			case "true":
+				g.overwriteServer = true
+			case "false":
+				g.overwriteServer = false
+			default:
+				g.Fail(fmt.Sprintf(`unknown %q, want "true" or "false"`, v))
+			}
+		case "server":
+			if v != "" {
+				g.serverFileName = v
+			}
+		case "stub":
+			if v != "" {
+				g.stubFileName = v
+			}
 		}
 	}
 	// Use default config if no config provided
 	if g.gqlgenConfig == nil {
 		g.gqlgenConfig = config.DefaultConfig()
 	}
+	// Add default resolver if not provided
+	if g.gqlgenConfig.Resolver == (config.PackageConfig{}) {
+		g.gqlgenConfig.Resolver = config.PackageConfig{
+			Filename: "resolver.go",
+			Type:     "Resolver",
+		}
+	}
+	// Use default server file if none provided
+	if g.serverFileName == "" {
+		g.serverFileName = "server/server.go"
+	}
 	// We've only parsed files to generate, let's not touch anything else
 	g.gqlgenConfig.SchemaFilename = g.Request.FileToGenerate
 }
 
-func (g *Generator) WrapTypes() {
-	g.genFiles = make([]*FileDescriptor, 0)
-
-	if g.gqlgenConfig.Model != (config.PackageConfig{}) {
-		fd, err := wrapPackageConfig(&g.gqlgenConfig.Model, g.gopaths)
-		if err != nil {
-			g.Error(err)
-		}
-		fd.doNotEdit = true
-		g.genFiles = append(g.genFiles, fd)
-	}
-
-	if g.gqlgenConfig.Resolver != (config.PackageConfig{}) {
-		fd, err := wrapPackageConfig(&g.gqlgenConfig.Resolver, g.gopaths)
-		if err != nil {
-			g.Error(err)
-		}
-		g.genFiles = append(g.genFiles, fd)
-	}
-
-	if g.gqlgenConfig.Exec != (config.PackageConfig{}) {
-		fd, err := wrapPackageConfig(&g.gqlgenConfig.Exec, g.gopaths)
-		if err != nil {
-			g.Error(err)
-		}
-		fd.doNotEdit = true
-		g.genFiles = append(g.genFiles, fd)
-	}
-}
-
-func wrapPackageConfig(cfg *config.PackageConfig, gopaths []string) (*FileDescriptor, error) {
-	importPath, err := buildImportPath(filepath.Dir(cfg.Filename), gopaths)
-	if err != nil {
-		return nil, err
-	}
-	packageName := GoPackageName(cfg.Package)
-	if packageName == "" {
-		packageName = GoPackageName(filepath.Base(string(importPath)))
-	}
-
-	return &FileDescriptor{
-		name:        cfg.Filename,
-		importPath:  importPath,
-		packageName: packageName,
-	}, nil
-}
-
 func (g *Generator) GenerateAllFiles() {
-	for _, fd := range g.genFiles {
-		g.Reset()
+	oldStderr := os.Stderr
+	oldStdout := os.Stdout
 
-		g.generate(fd)
-		g.Response.File = append(g.Response.File, &compiler.CodeGeneratorResponse_File{
-			Name:    fd.name,
-			Content: g.String(),
-		})
-	}
-}
-
-func (g *Generator) generate(fd *FileDescriptor) {
-	if fd.doNotEdit {
-		g.WriteString("// Code generated by github.com/99designs/gqlgen, DO NOT EDIT.\n\n")
-	}
-	g.WriteString("package " + string(fd.packageName) + "\n")
-}
-
-func buildImportPath(dir string, gopaths []string) (GoImportPath, error) {
-	cwd, err := filepath.Abs(dir)
+	rStderr, wStderr, err := os.Pipe()
 	if err != nil {
-		return "", err
+		g.Error(err)
 	}
-	cwd = filepath.ToSlash(cwd)
-	checkedPath := ""
-	for {
-		goMod, err := ioutil.ReadFile(filepath.Join(cwd, "/", "go.mod"))
-		if err == nil {
-			return GoImportPath(filepath.Join(string(regexp.MustCompile("module (.*)\n").FindSubmatch(goMod)[1]), checkedPath)), nil
+	rStdout, wStdout, err := os.Pipe()
+	if err != nil {
+		g.Error(err)
+	}
+
+	os.Stderr = wStderr
+	os.Stdout = wStdout
+
+	stderrC := make(chan string)
+	go func() {
+		var buf bytes.Buffer
+		io.Copy(&buf, rStderr)
+		stderrC <- buf.String()
+	}()
+	stdoutC := make(chan string)
+	go func() {
+		var buf bytes.Buffer
+		io.Copy(&buf, rStdout)
+		stdoutC <- buf.String()
+	}()
+
+	if g.overwriteResolver {
+		_ = os.Remove(g.gqlgenConfig.Resolver.Filename)
+	}
+
+	if g.overwriteServer {
+		_ = os.Remove(g.serverFileName)
+	}
+	_, err = os.Stat(g.serverFileName)
+	if os.IsNotExist(err) {
+		gqcmd.GenerateGraphServer(g.gqlgenConfig, g.serverFileName)
+	} else {
+		var options []api.Option
+		if g.stubFileName != "" {
+			options = append(options, api.AddPlugin(stubgen.New(g.stubFileName, "Stub")))
 		}
 
-		checkedPath = filepath.Join(filepath.Base(cwd), checkedPath)
-		cwd, err = filepath.Abs(filepath.Join(cwd, ".."))
+		err = api.Generate(g.gqlgenConfig, options...)
 		if err != nil {
-			return "", err
-		}
-
-		if cwd == "/" {
-			break
+			fmt.Fprintln(os.Stderr, err.Error())
 		}
 	}
 
-	for _, gopath := range gopaths {
-		gplen := len(gopath)
-		if gplen < len(dir) && strings.EqualFold(gopath, dir[0:gplen]) {
-			return GoImportPath(dir[gplen+1:]), nil
-		}
-	}
+	wStderr.Close()
+	wStdout.Close()
 
-	return "", nil
+	os.Stderr = oldStderr
+	os.Stdout = oldStdout
+
+	g.Response.File = append(g.Response.File, &compiler.CodeGeneratorResponse_File{
+		Name:    "gqlgen_output.log",
+		Content: <-stderrC + <-stdoutC,
+	})
 }

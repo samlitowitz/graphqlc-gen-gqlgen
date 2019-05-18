@@ -25,7 +25,6 @@ func main() {
 	}
 
 	g.CommandLineArguments(g.Request.Parameter)
-	g.WrapTypes()
 	g.GenerateAllFiles()
 
 	data, err = proto.Marshal(g.Response)

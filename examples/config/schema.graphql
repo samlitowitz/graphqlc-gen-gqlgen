@@ -1,0 +1,7 @@
+type Query {
+  todos: [Todo!]!
+}
+
+type Mutation {
+  createTodo(input: NewTodo!): Todo!
+}
