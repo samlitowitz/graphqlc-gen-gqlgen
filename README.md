@@ -12,4 +12,4 @@ Install [graphqlc](https://github.com/samlitowitz/graphqlc).
 # Usage
 `graphqlc --gqlgen_out=config=.gqlgen.yml:. schema.graphql`
 
-See examples directory for more use cases (mirrors gqlgen). Type extension is currently unsupported (standby for updates).
+See examples directory for more use cases (mirrors gqlgen). Type extension is currently [unsupported](https://github.com/graphql-go/graphql/issues/481).
