@@ -20,6 +20,98 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.ProtoPackageIsVersion3 // please upgrade the proto package
 
+type ExecutableDirectiveLocation int32
+
+const (
+	ExecutableDirectiveLocation_QUERY               ExecutableDirectiveLocation = 0
+	ExecutableDirectiveLocation_MUTATION            ExecutableDirectiveLocation = 1
+	ExecutableDirectiveLocation_SUBSCRIPTION        ExecutableDirectiveLocation = 2
+	ExecutableDirectiveLocation_FIELD               ExecutableDirectiveLocation = 3
+	ExecutableDirectiveLocation_FRAGMENT_DEFINITION ExecutableDirectiveLocation = 4
+	ExecutableDirectiveLocation_FRAGMENT_SPREAD     ExecutableDirectiveLocation = 5
+	ExecutableDirectiveLocation_INLINE_FRAGMENT     ExecutableDirectiveLocation = 6
+)
+
+var ExecutableDirectiveLocation_name = map[int32]string{
+	0: "QUERY",
+	1: "MUTATION",
+	2: "SUBSCRIPTION",
+	3: "FIELD",
+	4: "FRAGMENT_DEFINITION",
+	5: "FRAGMENT_SPREAD",
+	6: "INLINE_FRAGMENT",
+}
+
+var ExecutableDirectiveLocation_value = map[string]int32{
+	"QUERY":               0,
+	"MUTATION":            1,
+	"SUBSCRIPTION":        2,
+	"FIELD":               3,
+	"FRAGMENT_DEFINITION": 4,
+	"FRAGMENT_SPREAD":     5,
+	"INLINE_FRAGMENT":     6,
+}
+
+func (x ExecutableDirectiveLocation) String() string {
+	return proto.EnumName(ExecutableDirectiveLocation_name, int32(x))
+}
+
+func (ExecutableDirectiveLocation) EnumDescriptor() ([]byte, []int) {
+	return fileDescriptor_b5c0692a5e3de09d, []int{0}
+}
+
+type TypeSystemDirectiveLocation int32
+
+const (
+	TypeSystemDirectiveLocation_SCHEMA                 TypeSystemDirectiveLocation = 0
+	TypeSystemDirectiveLocation_SCALAR                 TypeSystemDirectiveLocation = 1
+	TypeSystemDirectiveLocation_OBJECT                 TypeSystemDirectiveLocation = 2
+	TypeSystemDirectiveLocation_FIELD_DEFINITION       TypeSystemDirectiveLocation = 3
+	TypeSystemDirectiveLocation_ARGUMENT_DEFINITION    TypeSystemDirectiveLocation = 4
+	TypeSystemDirectiveLocation_INTERFACE              TypeSystemDirectiveLocation = 5
+	TypeSystemDirectiveLocation_UNION                  TypeSystemDirectiveLocation = 6
+	TypeSystemDirectiveLocation_ENUM                   TypeSystemDirectiveLocation = 7
+	TypeSystemDirectiveLocation_ENUM_VALUE             TypeSystemDirectiveLocation = 8
+	TypeSystemDirectiveLocation_INPUT_OBJECT           TypeSystemDirectiveLocation = 9
+	TypeSystemDirectiveLocation_INPUT_FIELD_DEFINITION TypeSystemDirectiveLocation = 10
+)
+
+var TypeSystemDirectiveLocation_name = map[int32]string{
+	0:  "SCHEMA",
+	1:  "SCALAR",
+	2:  "OBJECT",
+	3:  "FIELD_DEFINITION",
+	4:  "ARGUMENT_DEFINITION",
+	5:  "INTERFACE",
+	6:  "UNION",
+	7:  "ENUM",
+	8:  "ENUM_VALUE",
+	9:  "INPUT_OBJECT",
+	10: "INPUT_FIELD_DEFINITION",
+}
+
+var TypeSystemDirectiveLocation_value = map[string]int32{
+	"SCHEMA":                 0,
+	"SCALAR":                 1,
+	"OBJECT":                 2,
+	"FIELD_DEFINITION":       3,
+	"ARGUMENT_DEFINITION":    4,
+	"INTERFACE":              5,
+	"UNION":                  6,
+	"ENUM":                   7,
+	"ENUM_VALUE":             8,
+	"INPUT_OBJECT":           9,
+	"INPUT_FIELD_DEFINITION": 10,
+}
+
+func (x TypeSystemDirectiveLocation) String() string {
+	return proto.EnumName(TypeSystemDirectiveLocation_name, int32(x))
+}
+
+func (TypeSystemDirectiveLocation) EnumDescriptor() ([]byte, []int) {
+	return fileDescriptor_b5c0692a5e3de09d, []int{1}
+}
+
 // The protocol compiler can output a FileDescriptorSet containing the
 // .graphql file it parses.
 type FileDescriptorSet struct {
@@ -66,6 +158,8 @@ type FileDescriptorGraphql struct {
 	Name string `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
 	// All top-level definitions in this file.
 	Schema               *SchemaDescriptorProto                      `protobuf:"bytes,2,opt,name=schema,proto3" json:"schema,omitempty"`
+	TypeExtensions       []*TypeSystemExtensionDescriptorProto       `protobuf:"bytes,10,rep,name=type_extensions,json=typeExtensions,proto3" json:"type_extensions,omitempty"`
+	Directives           []*DirectiveDefinitionDescriptorProto       `protobuf:"bytes,9,rep,name=directives,proto3" json:"directives,omitempty"`
 	Scalars              []*ScalarTypeDefinitionDescriptorProto      `protobuf:"bytes,3,rep,name=scalars,proto3" json:"scalars,omitempty"`
 	Objects              []*ObjectTypeDefinitionDescriptorProto      `protobuf:"bytes,4,rep,name=objects,proto3" json:"objects,omitempty"`
 	Interfaces           []*InterfaceTypeDefinitionDescriptorProto   `protobuf:"bytes,5,rep,name=interfaces,proto3" json:"interfaces,omitempty"`
@@ -112,6 +206,20 @@ func (m *FileDescriptorGraphql) GetName() string {
 func (m *FileDescriptorGraphql) GetSchema() *SchemaDescriptorProto {
 	if m != nil {
 		return m.Schema
+	}
+	return nil
+}
+
+func (m *FileDescriptorGraphql) GetTypeExtensions() []*TypeSystemExtensionDescriptorProto {
+	if m != nil {
+		return m.TypeExtensions
+	}
+	return nil
+}
+
+func (m *FileDescriptorGraphql) GetDirectives() []*DirectiveDefinitionDescriptorProto {
+	if m != nil {
+		return m.Directives
 	}
 	return nil
 }
@@ -221,6 +329,151 @@ func (m *SchemaDescriptorProto) GetSubscription() *ObjectTypeDefinitionDescripto
 	return nil
 }
 
+type DirectiveDefinitionDescriptorProto struct {
+	Description          string                                 `protobuf:"bytes,1,opt,name=description,proto3" json:"description,omitempty"`
+	Name                 string                                 `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
+	Arguments            []*InputValueDefinitionDescriptorProto `protobuf:"bytes,3,rep,name=arguments,proto3" json:"arguments,omitempty"`
+	Locations            []*DirectiveLocationDescriptorProto    `protobuf:"bytes,4,rep,name=locations,proto3" json:"locations,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}                               `json:"-"`
+	XXX_unrecognized     []byte                                 `json:"-"`
+	XXX_sizecache        int32                                  `json:"-"`
+}
+
+func (m *DirectiveDefinitionDescriptorProto) Reset()         { *m = DirectiveDefinitionDescriptorProto{} }
+func (m *DirectiveDefinitionDescriptorProto) String() string { return proto.CompactTextString(m) }
+func (*DirectiveDefinitionDescriptorProto) ProtoMessage()    {}
+func (*DirectiveDefinitionDescriptorProto) Descriptor() ([]byte, []int) {
+	return fileDescriptor_b5c0692a5e3de09d, []int{3}
+}
+
+func (m *DirectiveDefinitionDescriptorProto) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_DirectiveDefinitionDescriptorProto.Unmarshal(m, b)
+}
+func (m *DirectiveDefinitionDescriptorProto) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_DirectiveDefinitionDescriptorProto.Marshal(b, m, deterministic)
+}
+func (m *DirectiveDefinitionDescriptorProto) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_DirectiveDefinitionDescriptorProto.Merge(m, src)
+}
+func (m *DirectiveDefinitionDescriptorProto) XXX_Size() int {
+	return xxx_messageInfo_DirectiveDefinitionDescriptorProto.Size(m)
+}
+func (m *DirectiveDefinitionDescriptorProto) XXX_DiscardUnknown() {
+	xxx_messageInfo_DirectiveDefinitionDescriptorProto.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_DirectiveDefinitionDescriptorProto proto.InternalMessageInfo
+
+func (m *DirectiveDefinitionDescriptorProto) GetDescription() string {
+	if m != nil {
+		return m.Description
+	}
+	return ""
+}
+
+func (m *DirectiveDefinitionDescriptorProto) GetName() string {
+	if m != nil {
+		return m.Name
+	}
+	return ""
+}
+
+func (m *DirectiveDefinitionDescriptorProto) GetArguments() []*InputValueDefinitionDescriptorProto {
+	if m != nil {
+		return m.Arguments
+	}
+	return nil
+}
+
+func (m *DirectiveDefinitionDescriptorProto) GetLocations() []*DirectiveLocationDescriptorProto {
+	if m != nil {
+		return m.Locations
+	}
+	return nil
+}
+
+type DirectiveLocationDescriptorProto struct {
+	// Types that are valid to be assigned to Location:
+	//	*DirectiveLocationDescriptorProto_ExecutableLocation
+	//	*DirectiveLocationDescriptorProto_TypeSystemLocation
+	Location             isDirectiveLocationDescriptorProto_Location `protobuf_oneof:"location"`
+	XXX_NoUnkeyedLiteral struct{}                                    `json:"-"`
+	XXX_unrecognized     []byte                                      `json:"-"`
+	XXX_sizecache        int32                                       `json:"-"`
+}
+
+func (m *DirectiveLocationDescriptorProto) Reset()         { *m = DirectiveLocationDescriptorProto{} }
+func (m *DirectiveLocationDescriptorProto) String() string { return proto.CompactTextString(m) }
+func (*DirectiveLocationDescriptorProto) ProtoMessage()    {}
+func (*DirectiveLocationDescriptorProto) Descriptor() ([]byte, []int) {
+	return fileDescriptor_b5c0692a5e3de09d, []int{4}
+}
+
+func (m *DirectiveLocationDescriptorProto) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_DirectiveLocationDescriptorProto.Unmarshal(m, b)
+}
+func (m *DirectiveLocationDescriptorProto) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_DirectiveLocationDescriptorProto.Marshal(b, m, deterministic)
+}
+func (m *DirectiveLocationDescriptorProto) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_DirectiveLocationDescriptorProto.Merge(m, src)
+}
+func (m *DirectiveLocationDescriptorProto) XXX_Size() int {
+	return xxx_messageInfo_DirectiveLocationDescriptorProto.Size(m)
+}
+func (m *DirectiveLocationDescriptorProto) XXX_DiscardUnknown() {
+	xxx_messageInfo_DirectiveLocationDescriptorProto.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_DirectiveLocationDescriptorProto proto.InternalMessageInfo
+
+type isDirectiveLocationDescriptorProto_Location interface {
+	isDirectiveLocationDescriptorProto_Location()
+}
+
+type DirectiveLocationDescriptorProto_ExecutableLocation struct {
+	ExecutableLocation ExecutableDirectiveLocation `protobuf:"varint,2,opt,name=executable_location,json=executableLocation,proto3,enum=graphqlc.ExecutableDirectiveLocation,oneof"`
+}
+
+type DirectiveLocationDescriptorProto_TypeSystemLocation struct {
+	TypeSystemLocation TypeSystemDirectiveLocation `protobuf:"varint,3,opt,name=type_system_location,json=typeSystemLocation,proto3,enum=graphqlc.TypeSystemDirectiveLocation,oneof"`
+}
+
+func (*DirectiveLocationDescriptorProto_ExecutableLocation) isDirectiveLocationDescriptorProto_Location() {
+}
+
+func (*DirectiveLocationDescriptorProto_TypeSystemLocation) isDirectiveLocationDescriptorProto_Location() {
+}
+
+func (m *DirectiveLocationDescriptorProto) GetLocation() isDirectiveLocationDescriptorProto_Location {
+	if m != nil {
+		return m.Location
+	}
+	return nil
+}
+
+func (m *DirectiveLocationDescriptorProto) GetExecutableLocation() ExecutableDirectiveLocation {
+	if x, ok := m.GetLocation().(*DirectiveLocationDescriptorProto_ExecutableLocation); ok {
+		return x.ExecutableLocation
+	}
+	return ExecutableDirectiveLocation_QUERY
+}
+
+func (m *DirectiveLocationDescriptorProto) GetTypeSystemLocation() TypeSystemDirectiveLocation {
+	if x, ok := m.GetLocation().(*DirectiveLocationDescriptorProto_TypeSystemLocation); ok {
+		return x.TypeSystemLocation
+	}
+	return TypeSystemDirectiveLocation_SCHEMA
+}
+
+// XXX_OneofWrappers is for the internal use of the proto package.
+func (*DirectiveLocationDescriptorProto) XXX_OneofWrappers() []interface{} {
+	return []interface{}{
+		(*DirectiveLocationDescriptorProto_ExecutableLocation)(nil),
+		(*DirectiveLocationDescriptorProto_TypeSystemLocation)(nil),
+	}
+}
+
 type ScalarTypeDefinitionDescriptorProto struct {
 	Description          string                      `protobuf:"bytes,1,opt,name=description,proto3" json:"description,omitempty"`
 	Name                 string                      `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
@@ -234,7 +487,7 @@ func (m *ScalarTypeDefinitionDescriptorProto) Reset()         { *m = ScalarTypeD
 func (m *ScalarTypeDefinitionDescriptorProto) String() string { return proto.CompactTextString(m) }
 func (*ScalarTypeDefinitionDescriptorProto) ProtoMessage()    {}
 func (*ScalarTypeDefinitionDescriptorProto) Descriptor() ([]byte, []int) {
-	return fileDescriptor_b5c0692a5e3de09d, []int{3}
+	return fileDescriptor_b5c0692a5e3de09d, []int{5}
 }
 
 func (m *ScalarTypeDefinitionDescriptorProto) XXX_Unmarshal(b []byte) error {
@@ -276,6 +529,53 @@ func (m *ScalarTypeDefinitionDescriptorProto) GetDirectives() []*DirectiveDescri
 	return nil
 }
 
+type ScalarTypeExtensionDescriptorProto struct {
+	Name                 string                      `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
+	Directives           []*DirectiveDescriptorProto `protobuf:"bytes,2,rep,name=directives,proto3" json:"directives,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}                    `json:"-"`
+	XXX_unrecognized     []byte                      `json:"-"`
+	XXX_sizecache        int32                       `json:"-"`
+}
+
+func (m *ScalarTypeExtensionDescriptorProto) Reset()         { *m = ScalarTypeExtensionDescriptorProto{} }
+func (m *ScalarTypeExtensionDescriptorProto) String() string { return proto.CompactTextString(m) }
+func (*ScalarTypeExtensionDescriptorProto) ProtoMessage()    {}
+func (*ScalarTypeExtensionDescriptorProto) Descriptor() ([]byte, []int) {
+	return fileDescriptor_b5c0692a5e3de09d, []int{6}
+}
+
+func (m *ScalarTypeExtensionDescriptorProto) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_ScalarTypeExtensionDescriptorProto.Unmarshal(m, b)
+}
+func (m *ScalarTypeExtensionDescriptorProto) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_ScalarTypeExtensionDescriptorProto.Marshal(b, m, deterministic)
+}
+func (m *ScalarTypeExtensionDescriptorProto) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ScalarTypeExtensionDescriptorProto.Merge(m, src)
+}
+func (m *ScalarTypeExtensionDescriptorProto) XXX_Size() int {
+	return xxx_messageInfo_ScalarTypeExtensionDescriptorProto.Size(m)
+}
+func (m *ScalarTypeExtensionDescriptorProto) XXX_DiscardUnknown() {
+	xxx_messageInfo_ScalarTypeExtensionDescriptorProto.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_ScalarTypeExtensionDescriptorProto proto.InternalMessageInfo
+
+func (m *ScalarTypeExtensionDescriptorProto) GetName() string {
+	if m != nil {
+		return m.Name
+	}
+	return ""
+}
+
+func (m *ScalarTypeExtensionDescriptorProto) GetDirectives() []*DirectiveDescriptorProto {
+	if m != nil {
+		return m.Directives
+	}
+	return nil
+}
+
 type ObjectTypeDefinitionDescriptorProto struct {
 	Description          string                                    `protobuf:"bytes,1,opt,name=description,proto3" json:"description,omitempty"`
 	Name                 string                                    `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
@@ -291,7 +591,7 @@ func (m *ObjectTypeDefinitionDescriptorProto) Reset()         { *m = ObjectTypeD
 func (m *ObjectTypeDefinitionDescriptorProto) String() string { return proto.CompactTextString(m) }
 func (*ObjectTypeDefinitionDescriptorProto) ProtoMessage()    {}
 func (*ObjectTypeDefinitionDescriptorProto) Descriptor() ([]byte, []int) {
-	return fileDescriptor_b5c0692a5e3de09d, []int{4}
+	return fileDescriptor_b5c0692a5e3de09d, []int{7}
 }
 
 func (m *ObjectTypeDefinitionDescriptorProto) XXX_Unmarshal(b []byte) error {
@@ -347,6 +647,69 @@ func (m *ObjectTypeDefinitionDescriptorProto) GetFields() []*FieldDefinitionDesc
 	return nil
 }
 
+type ObjectTypeExtensionDescriptorProto struct {
+	Name                 string                                    `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
+	Implements           []*InterfaceTypeDefinitionDescriptorProto `protobuf:"bytes,3,rep,name=implements,proto3" json:"implements,omitempty"`
+	Directives           []*DirectiveDescriptorProto               `protobuf:"bytes,4,rep,name=directives,proto3" json:"directives,omitempty"`
+	Fields               []*FieldDefinitionDescriptorProto         `protobuf:"bytes,5,rep,name=fields,proto3" json:"fields,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}                                  `json:"-"`
+	XXX_unrecognized     []byte                                    `json:"-"`
+	XXX_sizecache        int32                                     `json:"-"`
+}
+
+func (m *ObjectTypeExtensionDescriptorProto) Reset()         { *m = ObjectTypeExtensionDescriptorProto{} }
+func (m *ObjectTypeExtensionDescriptorProto) String() string { return proto.CompactTextString(m) }
+func (*ObjectTypeExtensionDescriptorProto) ProtoMessage()    {}
+func (*ObjectTypeExtensionDescriptorProto) Descriptor() ([]byte, []int) {
+	return fileDescriptor_b5c0692a5e3de09d, []int{8}
+}
+
+func (m *ObjectTypeExtensionDescriptorProto) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_ObjectTypeExtensionDescriptorProto.Unmarshal(m, b)
+}
+func (m *ObjectTypeExtensionDescriptorProto) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_ObjectTypeExtensionDescriptorProto.Marshal(b, m, deterministic)
+}
+func (m *ObjectTypeExtensionDescriptorProto) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ObjectTypeExtensionDescriptorProto.Merge(m, src)
+}
+func (m *ObjectTypeExtensionDescriptorProto) XXX_Size() int {
+	return xxx_messageInfo_ObjectTypeExtensionDescriptorProto.Size(m)
+}
+func (m *ObjectTypeExtensionDescriptorProto) XXX_DiscardUnknown() {
+	xxx_messageInfo_ObjectTypeExtensionDescriptorProto.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_ObjectTypeExtensionDescriptorProto proto.InternalMessageInfo
+
+func (m *ObjectTypeExtensionDescriptorProto) GetName() string {
+	if m != nil {
+		return m.Name
+	}
+	return ""
+}
+
+func (m *ObjectTypeExtensionDescriptorProto) GetImplements() []*InterfaceTypeDefinitionDescriptorProto {
+	if m != nil {
+		return m.Implements
+	}
+	return nil
+}
+
+func (m *ObjectTypeExtensionDescriptorProto) GetDirectives() []*DirectiveDescriptorProto {
+	if m != nil {
+		return m.Directives
+	}
+	return nil
+}
+
+func (m *ObjectTypeExtensionDescriptorProto) GetFields() []*FieldDefinitionDescriptorProto {
+	if m != nil {
+		return m.Fields
+	}
+	return nil
+}
+
 type InterfaceTypeDefinitionDescriptorProto struct {
 	Description          string                            `protobuf:"bytes,1,opt,name=description,proto3" json:"description,omitempty"`
 	Name                 string                            `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
@@ -363,7 +726,7 @@ func (m *InterfaceTypeDefinitionDescriptorProto) Reset() {
 func (m *InterfaceTypeDefinitionDescriptorProto) String() string { return proto.CompactTextString(m) }
 func (*InterfaceTypeDefinitionDescriptorProto) ProtoMessage()    {}
 func (*InterfaceTypeDefinitionDescriptorProto) Descriptor() ([]byte, []int) {
-	return fileDescriptor_b5c0692a5e3de09d, []int{5}
+	return fileDescriptor_b5c0692a5e3de09d, []int{9}
 }
 
 func (m *InterfaceTypeDefinitionDescriptorProto) XXX_Unmarshal(b []byte) error {
@@ -412,6 +775,61 @@ func (m *InterfaceTypeDefinitionDescriptorProto) GetFields() []*FieldDefinitionD
 	return nil
 }
 
+type InterfaceTypeExtensionDescriptorProto struct {
+	Name                 string                            `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
+	Directives           []*DirectiveDescriptorProto       `protobuf:"bytes,2,rep,name=directives,proto3" json:"directives,omitempty"`
+	Fields               []*FieldDefinitionDescriptorProto `protobuf:"bytes,3,rep,name=fields,proto3" json:"fields,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}                          `json:"-"`
+	XXX_unrecognized     []byte                            `json:"-"`
+	XXX_sizecache        int32                             `json:"-"`
+}
+
+func (m *InterfaceTypeExtensionDescriptorProto) Reset()         { *m = InterfaceTypeExtensionDescriptorProto{} }
+func (m *InterfaceTypeExtensionDescriptorProto) String() string { return proto.CompactTextString(m) }
+func (*InterfaceTypeExtensionDescriptorProto) ProtoMessage()    {}
+func (*InterfaceTypeExtensionDescriptorProto) Descriptor() ([]byte, []int) {
+	return fileDescriptor_b5c0692a5e3de09d, []int{10}
+}
+
+func (m *InterfaceTypeExtensionDescriptorProto) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_InterfaceTypeExtensionDescriptorProto.Unmarshal(m, b)
+}
+func (m *InterfaceTypeExtensionDescriptorProto) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_InterfaceTypeExtensionDescriptorProto.Marshal(b, m, deterministic)
+}
+func (m *InterfaceTypeExtensionDescriptorProto) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_InterfaceTypeExtensionDescriptorProto.Merge(m, src)
+}
+func (m *InterfaceTypeExtensionDescriptorProto) XXX_Size() int {
+	return xxx_messageInfo_InterfaceTypeExtensionDescriptorProto.Size(m)
+}
+func (m *InterfaceTypeExtensionDescriptorProto) XXX_DiscardUnknown() {
+	xxx_messageInfo_InterfaceTypeExtensionDescriptorProto.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_InterfaceTypeExtensionDescriptorProto proto.InternalMessageInfo
+
+func (m *InterfaceTypeExtensionDescriptorProto) GetName() string {
+	if m != nil {
+		return m.Name
+	}
+	return ""
+}
+
+func (m *InterfaceTypeExtensionDescriptorProto) GetDirectives() []*DirectiveDescriptorProto {
+	if m != nil {
+		return m.Directives
+	}
+	return nil
+}
+
+func (m *InterfaceTypeExtensionDescriptorProto) GetFields() []*FieldDefinitionDescriptorProto {
+	if m != nil {
+		return m.Fields
+	}
+	return nil
+}
+
 type UnionTypeDefinitionDescriptorProto struct {
 	Description          string                      `protobuf:"bytes,1,opt,name=description,proto3" json:"description,omitempty"`
 	Name                 string                      `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
@@ -426,7 +844,7 @@ func (m *UnionTypeDefinitionDescriptorProto) Reset()         { *m = UnionTypeDef
 func (m *UnionTypeDefinitionDescriptorProto) String() string { return proto.CompactTextString(m) }
 func (*UnionTypeDefinitionDescriptorProto) ProtoMessage()    {}
 func (*UnionTypeDefinitionDescriptorProto) Descriptor() ([]byte, []int) {
-	return fileDescriptor_b5c0692a5e3de09d, []int{6}
+	return fileDescriptor_b5c0692a5e3de09d, []int{11}
 }
 
 func (m *UnionTypeDefinitionDescriptorProto) XXX_Unmarshal(b []byte) error {
@@ -475,6 +893,65 @@ func (m *UnionTypeDefinitionDescriptorProto) GetMemberTypes() []*NamedTypeDescri
 	return nil
 }
 
+type UnionTypeExtensionDefinitionDescriptorProto struct {
+	Name                 string                      `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
+	Directives           []*DirectiveDescriptorProto `protobuf:"bytes,2,rep,name=directives,proto3" json:"directives,omitempty"`
+	MemberTypes          []*NamedTypeDescriptorProto `protobuf:"bytes,3,rep,name=member_types,json=memberTypes,proto3" json:"member_types,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}                    `json:"-"`
+	XXX_unrecognized     []byte                      `json:"-"`
+	XXX_sizecache        int32                       `json:"-"`
+}
+
+func (m *UnionTypeExtensionDefinitionDescriptorProto) Reset() {
+	*m = UnionTypeExtensionDefinitionDescriptorProto{}
+}
+func (m *UnionTypeExtensionDefinitionDescriptorProto) String() string {
+	return proto.CompactTextString(m)
+}
+func (*UnionTypeExtensionDefinitionDescriptorProto) ProtoMessage() {}
+func (*UnionTypeExtensionDefinitionDescriptorProto) Descriptor() ([]byte, []int) {
+	return fileDescriptor_b5c0692a5e3de09d, []int{12}
+}
+
+func (m *UnionTypeExtensionDefinitionDescriptorProto) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_UnionTypeExtensionDefinitionDescriptorProto.Unmarshal(m, b)
+}
+func (m *UnionTypeExtensionDefinitionDescriptorProto) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_UnionTypeExtensionDefinitionDescriptorProto.Marshal(b, m, deterministic)
+}
+func (m *UnionTypeExtensionDefinitionDescriptorProto) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_UnionTypeExtensionDefinitionDescriptorProto.Merge(m, src)
+}
+func (m *UnionTypeExtensionDefinitionDescriptorProto) XXX_Size() int {
+	return xxx_messageInfo_UnionTypeExtensionDefinitionDescriptorProto.Size(m)
+}
+func (m *UnionTypeExtensionDefinitionDescriptorProto) XXX_DiscardUnknown() {
+	xxx_messageInfo_UnionTypeExtensionDefinitionDescriptorProto.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_UnionTypeExtensionDefinitionDescriptorProto proto.InternalMessageInfo
+
+func (m *UnionTypeExtensionDefinitionDescriptorProto) GetName() string {
+	if m != nil {
+		return m.Name
+	}
+	return ""
+}
+
+func (m *UnionTypeExtensionDefinitionDescriptorProto) GetDirectives() []*DirectiveDescriptorProto {
+	if m != nil {
+		return m.Directives
+	}
+	return nil
+}
+
+func (m *UnionTypeExtensionDefinitionDescriptorProto) GetMemberTypes() []*NamedTypeDescriptorProto {
+	if m != nil {
+		return m.MemberTypes
+	}
+	return nil
+}
+
 type EnumTypeDefinitionDescriptorProto struct {
 	Description          string                            `protobuf:"bytes,1,opt,name=description,proto3" json:"description,omitempty"`
 	Name                 string                            `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
@@ -489,7 +966,7 @@ func (m *EnumTypeDefinitionDescriptorProto) Reset()         { *m = EnumTypeDefin
 func (m *EnumTypeDefinitionDescriptorProto) String() string { return proto.CompactTextString(m) }
 func (*EnumTypeDefinitionDescriptorProto) ProtoMessage()    {}
 func (*EnumTypeDefinitionDescriptorProto) Descriptor() ([]byte, []int) {
-	return fileDescriptor_b5c0692a5e3de09d, []int{7}
+	return fileDescriptor_b5c0692a5e3de09d, []int{13}
 }
 
 func (m *EnumTypeDefinitionDescriptorProto) XXX_Unmarshal(b []byte) error {
@@ -538,6 +1015,65 @@ func (m *EnumTypeDefinitionDescriptorProto) GetValues() []*EnumValueDefinitionDe
 	return nil
 }
 
+type EnumTypeExtensionDefinitionDescriptorProto struct {
+	Name                 string                            `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
+	Directives           []*DirectiveDescriptorProto       `protobuf:"bytes,2,rep,name=directives,proto3" json:"directives,omitempty"`
+	Values               []*EnumValueDefinitionDescription `protobuf:"bytes,3,rep,name=values,proto3" json:"values,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}                          `json:"-"`
+	XXX_unrecognized     []byte                            `json:"-"`
+	XXX_sizecache        int32                             `json:"-"`
+}
+
+func (m *EnumTypeExtensionDefinitionDescriptorProto) Reset() {
+	*m = EnumTypeExtensionDefinitionDescriptorProto{}
+}
+func (m *EnumTypeExtensionDefinitionDescriptorProto) String() string {
+	return proto.CompactTextString(m)
+}
+func (*EnumTypeExtensionDefinitionDescriptorProto) ProtoMessage() {}
+func (*EnumTypeExtensionDefinitionDescriptorProto) Descriptor() ([]byte, []int) {
+	return fileDescriptor_b5c0692a5e3de09d, []int{14}
+}
+
+func (m *EnumTypeExtensionDefinitionDescriptorProto) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_EnumTypeExtensionDefinitionDescriptorProto.Unmarshal(m, b)
+}
+func (m *EnumTypeExtensionDefinitionDescriptorProto) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_EnumTypeExtensionDefinitionDescriptorProto.Marshal(b, m, deterministic)
+}
+func (m *EnumTypeExtensionDefinitionDescriptorProto) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_EnumTypeExtensionDefinitionDescriptorProto.Merge(m, src)
+}
+func (m *EnumTypeExtensionDefinitionDescriptorProto) XXX_Size() int {
+	return xxx_messageInfo_EnumTypeExtensionDefinitionDescriptorProto.Size(m)
+}
+func (m *EnumTypeExtensionDefinitionDescriptorProto) XXX_DiscardUnknown() {
+	xxx_messageInfo_EnumTypeExtensionDefinitionDescriptorProto.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_EnumTypeExtensionDefinitionDescriptorProto proto.InternalMessageInfo
+
+func (m *EnumTypeExtensionDefinitionDescriptorProto) GetName() string {
+	if m != nil {
+		return m.Name
+	}
+	return ""
+}
+
+func (m *EnumTypeExtensionDefinitionDescriptorProto) GetDirectives() []*DirectiveDescriptorProto {
+	if m != nil {
+		return m.Directives
+	}
+	return nil
+}
+
+func (m *EnumTypeExtensionDefinitionDescriptorProto) GetValues() []*EnumValueDefinitionDescription {
+	if m != nil {
+		return m.Values
+	}
+	return nil
+}
+
 type InputObjectTypeDefinitionDescriptorProto struct {
 	Description          string                                 `protobuf:"bytes,1,opt,name=description,proto3" json:"description,omitempty"`
 	Name                 string                                 `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
@@ -554,7 +1090,7 @@ func (m *InputObjectTypeDefinitionDescriptorProto) Reset() {
 func (m *InputObjectTypeDefinitionDescriptorProto) String() string { return proto.CompactTextString(m) }
 func (*InputObjectTypeDefinitionDescriptorProto) ProtoMessage()    {}
 func (*InputObjectTypeDefinitionDescriptorProto) Descriptor() ([]byte, []int) {
-	return fileDescriptor_b5c0692a5e3de09d, []int{8}
+	return fileDescriptor_b5c0692a5e3de09d, []int{15}
 }
 
 func (m *InputObjectTypeDefinitionDescriptorProto) XXX_Unmarshal(b []byte) error {
@@ -603,6 +1139,339 @@ func (m *InputObjectTypeDefinitionDescriptorProto) GetFields() []*InputValueDefi
 	return nil
 }
 
+type InputObjectTypeExtensionDefinitionDescriptorProto struct {
+	Name                 string                                 `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
+	Directives           []*DirectiveDescriptorProto            `protobuf:"bytes,2,rep,name=directives,proto3" json:"directives,omitempty"`
+	Fields               []*InputValueDefinitionDescriptorProto `protobuf:"bytes,3,rep,name=fields,proto3" json:"fields,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}                               `json:"-"`
+	XXX_unrecognized     []byte                                 `json:"-"`
+	XXX_sizecache        int32                                  `json:"-"`
+}
+
+func (m *InputObjectTypeExtensionDefinitionDescriptorProto) Reset() {
+	*m = InputObjectTypeExtensionDefinitionDescriptorProto{}
+}
+func (m *InputObjectTypeExtensionDefinitionDescriptorProto) String() string {
+	return proto.CompactTextString(m)
+}
+func (*InputObjectTypeExtensionDefinitionDescriptorProto) ProtoMessage() {}
+func (*InputObjectTypeExtensionDefinitionDescriptorProto) Descriptor() ([]byte, []int) {
+	return fileDescriptor_b5c0692a5e3de09d, []int{16}
+}
+
+func (m *InputObjectTypeExtensionDefinitionDescriptorProto) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_InputObjectTypeExtensionDefinitionDescriptorProto.Unmarshal(m, b)
+}
+func (m *InputObjectTypeExtensionDefinitionDescriptorProto) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_InputObjectTypeExtensionDefinitionDescriptorProto.Marshal(b, m, deterministic)
+}
+func (m *InputObjectTypeExtensionDefinitionDescriptorProto) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_InputObjectTypeExtensionDefinitionDescriptorProto.Merge(m, src)
+}
+func (m *InputObjectTypeExtensionDefinitionDescriptorProto) XXX_Size() int {
+	return xxx_messageInfo_InputObjectTypeExtensionDefinitionDescriptorProto.Size(m)
+}
+func (m *InputObjectTypeExtensionDefinitionDescriptorProto) XXX_DiscardUnknown() {
+	xxx_messageInfo_InputObjectTypeExtensionDefinitionDescriptorProto.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_InputObjectTypeExtensionDefinitionDescriptorProto proto.InternalMessageInfo
+
+func (m *InputObjectTypeExtensionDefinitionDescriptorProto) GetName() string {
+	if m != nil {
+		return m.Name
+	}
+	return ""
+}
+
+func (m *InputObjectTypeExtensionDefinitionDescriptorProto) GetDirectives() []*DirectiveDescriptorProto {
+	if m != nil {
+		return m.Directives
+	}
+	return nil
+}
+
+func (m *InputObjectTypeExtensionDefinitionDescriptorProto) GetFields() []*InputValueDefinitionDescriptorProto {
+	if m != nil {
+		return m.Fields
+	}
+	return nil
+}
+
+type TypeSystemExtensionDescriptorProto struct {
+	// Types that are valid to be assigned to Extension:
+	//	*TypeSystemExtensionDescriptorProto_SchemaExtension
+	//	*TypeSystemExtensionDescriptorProto_TypeExtension
+	Extension            isTypeSystemExtensionDescriptorProto_Extension `protobuf_oneof:"extension"`
+	XXX_NoUnkeyedLiteral struct{}                                       `json:"-"`
+	XXX_unrecognized     []byte                                         `json:"-"`
+	XXX_sizecache        int32                                          `json:"-"`
+}
+
+func (m *TypeSystemExtensionDescriptorProto) Reset()         { *m = TypeSystemExtensionDescriptorProto{} }
+func (m *TypeSystemExtensionDescriptorProto) String() string { return proto.CompactTextString(m) }
+func (*TypeSystemExtensionDescriptorProto) ProtoMessage()    {}
+func (*TypeSystemExtensionDescriptorProto) Descriptor() ([]byte, []int) {
+	return fileDescriptor_b5c0692a5e3de09d, []int{17}
+}
+
+func (m *TypeSystemExtensionDescriptorProto) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_TypeSystemExtensionDescriptorProto.Unmarshal(m, b)
+}
+func (m *TypeSystemExtensionDescriptorProto) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_TypeSystemExtensionDescriptorProto.Marshal(b, m, deterministic)
+}
+func (m *TypeSystemExtensionDescriptorProto) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_TypeSystemExtensionDescriptorProto.Merge(m, src)
+}
+func (m *TypeSystemExtensionDescriptorProto) XXX_Size() int {
+	return xxx_messageInfo_TypeSystemExtensionDescriptorProto.Size(m)
+}
+func (m *TypeSystemExtensionDescriptorProto) XXX_DiscardUnknown() {
+	xxx_messageInfo_TypeSystemExtensionDescriptorProto.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_TypeSystemExtensionDescriptorProto proto.InternalMessageInfo
+
+type isTypeSystemExtensionDescriptorProto_Extension interface {
+	isTypeSystemExtensionDescriptorProto_Extension()
+}
+
+type TypeSystemExtensionDescriptorProto_SchemaExtension struct {
+	SchemaExtension *SchemaExtensionDescriptorProto `protobuf:"bytes,1,opt,name=schema_extension,json=schemaExtension,proto3,oneof"`
+}
+
+type TypeSystemExtensionDescriptorProto_TypeExtension struct {
+	TypeExtension *TypeExtensionDescriptorProto `protobuf:"bytes,2,opt,name=type_extension,json=typeExtension,proto3,oneof"`
+}
+
+func (*TypeSystemExtensionDescriptorProto_SchemaExtension) isTypeSystemExtensionDescriptorProto_Extension() {
+}
+
+func (*TypeSystemExtensionDescriptorProto_TypeExtension) isTypeSystemExtensionDescriptorProto_Extension() {
+}
+
+func (m *TypeSystemExtensionDescriptorProto) GetExtension() isTypeSystemExtensionDescriptorProto_Extension {
+	if m != nil {
+		return m.Extension
+	}
+	return nil
+}
+
+func (m *TypeSystemExtensionDescriptorProto) GetSchemaExtension() *SchemaExtensionDescriptorProto {
+	if x, ok := m.GetExtension().(*TypeSystemExtensionDescriptorProto_SchemaExtension); ok {
+		return x.SchemaExtension
+	}
+	return nil
+}
+
+func (m *TypeSystemExtensionDescriptorProto) GetTypeExtension() *TypeExtensionDescriptorProto {
+	if x, ok := m.GetExtension().(*TypeSystemExtensionDescriptorProto_TypeExtension); ok {
+		return x.TypeExtension
+	}
+	return nil
+}
+
+// XXX_OneofWrappers is for the internal use of the proto package.
+func (*TypeSystemExtensionDescriptorProto) XXX_OneofWrappers() []interface{} {
+	return []interface{}{
+		(*TypeSystemExtensionDescriptorProto_SchemaExtension)(nil),
+		(*TypeSystemExtensionDescriptorProto_TypeExtension)(nil),
+	}
+}
+
+type SchemaExtensionDescriptorProto struct {
+	Directives               []*DirectiveDescriptorProto `protobuf:"bytes,1,rep,name=directives,proto3" json:"directives,omitempty"`
+	OperationTypeDefinitions []*NamedTypeDescriptorProto `protobuf:"bytes,2,rep,name=operation_type_definitions,json=operationTypeDefinitions,proto3" json:"operation_type_definitions,omitempty"`
+	XXX_NoUnkeyedLiteral     struct{}                    `json:"-"`
+	XXX_unrecognized         []byte                      `json:"-"`
+	XXX_sizecache            int32                       `json:"-"`
+}
+
+func (m *SchemaExtensionDescriptorProto) Reset()         { *m = SchemaExtensionDescriptorProto{} }
+func (m *SchemaExtensionDescriptorProto) String() string { return proto.CompactTextString(m) }
+func (*SchemaExtensionDescriptorProto) ProtoMessage()    {}
+func (*SchemaExtensionDescriptorProto) Descriptor() ([]byte, []int) {
+	return fileDescriptor_b5c0692a5e3de09d, []int{18}
+}
+
+func (m *SchemaExtensionDescriptorProto) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_SchemaExtensionDescriptorProto.Unmarshal(m, b)
+}
+func (m *SchemaExtensionDescriptorProto) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_SchemaExtensionDescriptorProto.Marshal(b, m, deterministic)
+}
+func (m *SchemaExtensionDescriptorProto) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_SchemaExtensionDescriptorProto.Merge(m, src)
+}
+func (m *SchemaExtensionDescriptorProto) XXX_Size() int {
+	return xxx_messageInfo_SchemaExtensionDescriptorProto.Size(m)
+}
+func (m *SchemaExtensionDescriptorProto) XXX_DiscardUnknown() {
+	xxx_messageInfo_SchemaExtensionDescriptorProto.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_SchemaExtensionDescriptorProto proto.InternalMessageInfo
+
+func (m *SchemaExtensionDescriptorProto) GetDirectives() []*DirectiveDescriptorProto {
+	if m != nil {
+		return m.Directives
+	}
+	return nil
+}
+
+func (m *SchemaExtensionDescriptorProto) GetOperationTypeDefinitions() []*NamedTypeDescriptorProto {
+	if m != nil {
+		return m.OperationTypeDefinitions
+	}
+	return nil
+}
+
+type TypeExtensionDescriptorProto struct {
+	// Types that are valid to be assigned to TypeExtension:
+	//	*TypeExtensionDescriptorProto_ScalarTypeExtension
+	//	*TypeExtensionDescriptorProto_ObjectTypeExtension
+	//	*TypeExtensionDescriptorProto_InterfaceTypeExtension
+	//	*TypeExtensionDescriptorProto_UnionTypeExtension
+	//	*TypeExtensionDescriptorProto_EnumTypeExtions
+	//	*TypeExtensionDescriptorProto_InputObjectTypeExtension
+	TypeExtension        isTypeExtensionDescriptorProto_TypeExtension `protobuf_oneof:"type_extension"`
+	XXX_NoUnkeyedLiteral struct{}                                     `json:"-"`
+	XXX_unrecognized     []byte                                       `json:"-"`
+	XXX_sizecache        int32                                        `json:"-"`
+}
+
+func (m *TypeExtensionDescriptorProto) Reset()         { *m = TypeExtensionDescriptorProto{} }
+func (m *TypeExtensionDescriptorProto) String() string { return proto.CompactTextString(m) }
+func (*TypeExtensionDescriptorProto) ProtoMessage()    {}
+func (*TypeExtensionDescriptorProto) Descriptor() ([]byte, []int) {
+	return fileDescriptor_b5c0692a5e3de09d, []int{19}
+}
+
+func (m *TypeExtensionDescriptorProto) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_TypeExtensionDescriptorProto.Unmarshal(m, b)
+}
+func (m *TypeExtensionDescriptorProto) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_TypeExtensionDescriptorProto.Marshal(b, m, deterministic)
+}
+func (m *TypeExtensionDescriptorProto) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_TypeExtensionDescriptorProto.Merge(m, src)
+}
+func (m *TypeExtensionDescriptorProto) XXX_Size() int {
+	return xxx_messageInfo_TypeExtensionDescriptorProto.Size(m)
+}
+func (m *TypeExtensionDescriptorProto) XXX_DiscardUnknown() {
+	xxx_messageInfo_TypeExtensionDescriptorProto.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_TypeExtensionDescriptorProto proto.InternalMessageInfo
+
+type isTypeExtensionDescriptorProto_TypeExtension interface {
+	isTypeExtensionDescriptorProto_TypeExtension()
+}
+
+type TypeExtensionDescriptorProto_ScalarTypeExtension struct {
+	ScalarTypeExtension *ScalarTypeExtensionDescriptorProto `protobuf:"bytes,1,opt,name=scalar_type_extension,json=scalarTypeExtension,proto3,oneof"`
+}
+
+type TypeExtensionDescriptorProto_ObjectTypeExtension struct {
+	ObjectTypeExtension *ObjectTypeExtensionDescriptorProto `protobuf:"bytes,2,opt,name=object_type_extension,json=objectTypeExtension,proto3,oneof"`
+}
+
+type TypeExtensionDescriptorProto_InterfaceTypeExtension struct {
+	InterfaceTypeExtension *InterfaceTypeExtensionDescriptorProto `protobuf:"bytes,3,opt,name=interface_type_extension,json=interfaceTypeExtension,proto3,oneof"`
+}
+
+type TypeExtensionDescriptorProto_UnionTypeExtension struct {
+	UnionTypeExtension *UnionTypeExtensionDefinitionDescriptorProto `protobuf:"bytes,4,opt,name=union_type_extension,json=unionTypeExtension,proto3,oneof"`
+}
+
+type TypeExtensionDescriptorProto_EnumTypeExtions struct {
+	EnumTypeExtions *EnumTypeExtensionDefinitionDescriptorProto `protobuf:"bytes,5,opt,name=enum_type_extions,json=enumTypeExtions,proto3,oneof"`
+}
+
+type TypeExtensionDescriptorProto_InputObjectTypeExtension struct {
+	InputObjectTypeExtension *InputObjectTypeExtensionDefinitionDescriptorProto `protobuf:"bytes,6,opt,name=input_object_type_extension,json=inputObjectTypeExtension,proto3,oneof"`
+}
+
+func (*TypeExtensionDescriptorProto_ScalarTypeExtension) isTypeExtensionDescriptorProto_TypeExtension() {
+}
+
+func (*TypeExtensionDescriptorProto_ObjectTypeExtension) isTypeExtensionDescriptorProto_TypeExtension() {
+}
+
+func (*TypeExtensionDescriptorProto_InterfaceTypeExtension) isTypeExtensionDescriptorProto_TypeExtension() {
+}
+
+func (*TypeExtensionDescriptorProto_UnionTypeExtension) isTypeExtensionDescriptorProto_TypeExtension() {
+}
+
+func (*TypeExtensionDescriptorProto_EnumTypeExtions) isTypeExtensionDescriptorProto_TypeExtension() {}
+
+func (*TypeExtensionDescriptorProto_InputObjectTypeExtension) isTypeExtensionDescriptorProto_TypeExtension() {
+}
+
+func (m *TypeExtensionDescriptorProto) GetTypeExtension() isTypeExtensionDescriptorProto_TypeExtension {
+	if m != nil {
+		return m.TypeExtension
+	}
+	return nil
+}
+
+func (m *TypeExtensionDescriptorProto) GetScalarTypeExtension() *ScalarTypeExtensionDescriptorProto {
+	if x, ok := m.GetTypeExtension().(*TypeExtensionDescriptorProto_ScalarTypeExtension); ok {
+		return x.ScalarTypeExtension
+	}
+	return nil
+}
+
+func (m *TypeExtensionDescriptorProto) GetObjectTypeExtension() *ObjectTypeExtensionDescriptorProto {
+	if x, ok := m.GetTypeExtension().(*TypeExtensionDescriptorProto_ObjectTypeExtension); ok {
+		return x.ObjectTypeExtension
+	}
+	return nil
+}
+
+func (m *TypeExtensionDescriptorProto) GetInterfaceTypeExtension() *InterfaceTypeExtensionDescriptorProto {
+	if x, ok := m.GetTypeExtension().(*TypeExtensionDescriptorProto_InterfaceTypeExtension); ok {
+		return x.InterfaceTypeExtension
+	}
+	return nil
+}
+
+func (m *TypeExtensionDescriptorProto) GetUnionTypeExtension() *UnionTypeExtensionDefinitionDescriptorProto {
+	if x, ok := m.GetTypeExtension().(*TypeExtensionDescriptorProto_UnionTypeExtension); ok {
+		return x.UnionTypeExtension
+	}
+	return nil
+}
+
+func (m *TypeExtensionDescriptorProto) GetEnumTypeExtions() *EnumTypeExtensionDefinitionDescriptorProto {
+	if x, ok := m.GetTypeExtension().(*TypeExtensionDescriptorProto_EnumTypeExtions); ok {
+		return x.EnumTypeExtions
+	}
+	return nil
+}
+
+func (m *TypeExtensionDescriptorProto) GetInputObjectTypeExtension() *InputObjectTypeExtensionDefinitionDescriptorProto {
+	if x, ok := m.GetTypeExtension().(*TypeExtensionDescriptorProto_InputObjectTypeExtension); ok {
+		return x.InputObjectTypeExtension
+	}
+	return nil
+}
+
+// XXX_OneofWrappers is for the internal use of the proto package.
+func (*TypeExtensionDescriptorProto) XXX_OneofWrappers() []interface{} {
+	return []interface{}{
+		(*TypeExtensionDescriptorProto_ScalarTypeExtension)(nil),
+		(*TypeExtensionDescriptorProto_ObjectTypeExtension)(nil),
+		(*TypeExtensionDescriptorProto_InterfaceTypeExtension)(nil),
+		(*TypeExtensionDescriptorProto_UnionTypeExtension)(nil),
+		(*TypeExtensionDescriptorProto_EnumTypeExtions)(nil),
+		(*TypeExtensionDescriptorProto_InputObjectTypeExtension)(nil),
+	}
+}
+
 type EnumValueDefinitionDescription struct {
 	Description          string                      `protobuf:"bytes,1,opt,name=description,proto3" json:"description,omitempty"`
 	Value                string                      `protobuf:"bytes,2,opt,name=value,proto3" json:"value,omitempty"`
@@ -616,7 +1485,7 @@ func (m *EnumValueDefinitionDescription) Reset()         { *m = EnumValueDefinit
 func (m *EnumValueDefinitionDescription) String() string { return proto.CompactTextString(m) }
 func (*EnumValueDefinitionDescription) ProtoMessage()    {}
 func (*EnumValueDefinitionDescription) Descriptor() ([]byte, []int) {
-	return fileDescriptor_b5c0692a5e3de09d, []int{9}
+	return fileDescriptor_b5c0692a5e3de09d, []int{20}
 }
 
 func (m *EnumValueDefinitionDescription) XXX_Unmarshal(b []byte) error {
@@ -673,7 +1542,7 @@ func (m *FieldDefinitionDescriptorProto) Reset()         { *m = FieldDefinitionD
 func (m *FieldDefinitionDescriptorProto) String() string { return proto.CompactTextString(m) }
 func (*FieldDefinitionDescriptorProto) ProtoMessage()    {}
 func (*FieldDefinitionDescriptorProto) Descriptor() ([]byte, []int) {
-	return fileDescriptor_b5c0692a5e3de09d, []int{10}
+	return fileDescriptor_b5c0692a5e3de09d, []int{21}
 }
 
 func (m *FieldDefinitionDescriptorProto) XXX_Unmarshal(b []byte) error {
@@ -744,7 +1613,7 @@ func (m *InputValueDefinitionDescriptorProto) Reset()         { *m = InputValueD
 func (m *InputValueDefinitionDescriptorProto) String() string { return proto.CompactTextString(m) }
 func (*InputValueDefinitionDescriptorProto) ProtoMessage()    {}
 func (*InputValueDefinitionDescriptorProto) Descriptor() ([]byte, []int) {
-	return fileDescriptor_b5c0692a5e3de09d, []int{11}
+	return fileDescriptor_b5c0692a5e3de09d, []int{22}
 }
 
 func (m *InputValueDefinitionDescriptorProto) XXX_Unmarshal(b []byte) error {
@@ -815,7 +1684,7 @@ func (m *TypeDescriptorProto) Reset()         { *m = TypeDescriptorProto{} }
 func (m *TypeDescriptorProto) String() string { return proto.CompactTextString(m) }
 func (*TypeDescriptorProto) ProtoMessage()    {}
 func (*TypeDescriptorProto) Descriptor() ([]byte, []int) {
-	return fileDescriptor_b5c0692a5e3de09d, []int{12}
+	return fileDescriptor_b5c0692a5e3de09d, []int{23}
 }
 
 func (m *TypeDescriptorProto) XXX_Unmarshal(b []byte) error {
@@ -906,7 +1775,7 @@ func (m *NamedTypeDescriptorProto) Reset()         { *m = NamedTypeDescriptorPro
 func (m *NamedTypeDescriptorProto) String() string { return proto.CompactTextString(m) }
 func (*NamedTypeDescriptorProto) ProtoMessage()    {}
 func (*NamedTypeDescriptorProto) Descriptor() ([]byte, []int) {
-	return fileDescriptor_b5c0692a5e3de09d, []int{13}
+	return fileDescriptor_b5c0692a5e3de09d, []int{24}
 }
 
 func (m *NamedTypeDescriptorProto) XXX_Unmarshal(b []byte) error {
@@ -945,7 +1814,7 @@ func (m *ListTypeDescriptorProto) Reset()         { *m = ListTypeDescriptorProto
 func (m *ListTypeDescriptorProto) String() string { return proto.CompactTextString(m) }
 func (*ListTypeDescriptorProto) ProtoMessage()    {}
 func (*ListTypeDescriptorProto) Descriptor() ([]byte, []int) {
-	return fileDescriptor_b5c0692a5e3de09d, []int{14}
+	return fileDescriptor_b5c0692a5e3de09d, []int{25}
 }
 
 func (m *ListTypeDescriptorProto) XXX_Unmarshal(b []byte) error {
@@ -987,7 +1856,7 @@ func (m *NonNullTypeDescriptorProto) Reset()         { *m = NonNullTypeDescripto
 func (m *NonNullTypeDescriptorProto) String() string { return proto.CompactTextString(m) }
 func (*NonNullTypeDescriptorProto) ProtoMessage()    {}
 func (*NonNullTypeDescriptorProto) Descriptor() ([]byte, []int) {
-	return fileDescriptor_b5c0692a5e3de09d, []int{15}
+	return fileDescriptor_b5c0692a5e3de09d, []int{26}
 }
 
 func (m *NonNullTypeDescriptorProto) XXX_Unmarshal(b []byte) error {
@@ -1065,7 +1934,7 @@ func (m *DirectiveDescriptorProto) Reset()         { *m = DirectiveDescriptorPro
 func (m *DirectiveDescriptorProto) String() string { return proto.CompactTextString(m) }
 func (*DirectiveDescriptorProto) ProtoMessage()    {}
 func (*DirectiveDescriptorProto) Descriptor() ([]byte, []int) {
-	return fileDescriptor_b5c0692a5e3de09d, []int{16}
+	return fileDescriptor_b5c0692a5e3de09d, []int{27}
 }
 
 func (m *DirectiveDescriptorProto) XXX_Unmarshal(b []byte) error {
@@ -1112,7 +1981,7 @@ func (m *ArgumentDescriptorProto) Reset()         { *m = ArgumentDescriptorProto
 func (m *ArgumentDescriptorProto) String() string { return proto.CompactTextString(m) }
 func (*ArgumentDescriptorProto) ProtoMessage()    {}
 func (*ArgumentDescriptorProto) Descriptor() ([]byte, []int) {
-	return fileDescriptor_b5c0692a5e3de09d, []int{17}
+	return fileDescriptor_b5c0692a5e3de09d, []int{28}
 }
 
 func (m *ArgumentDescriptorProto) XXX_Unmarshal(b []byte) error {
@@ -1168,7 +2037,7 @@ func (m *ValueDescriptorProto) Reset()         { *m = ValueDescriptorProto{} }
 func (m *ValueDescriptorProto) String() string { return proto.CompactTextString(m) }
 func (*ValueDescriptorProto) ProtoMessage()    {}
 func (*ValueDescriptorProto) Descriptor() ([]byte, []int) {
-	return fileDescriptor_b5c0692a5e3de09d, []int{18}
+	return fileDescriptor_b5c0692a5e3de09d, []int{29}
 }
 
 func (m *ValueDescriptorProto) XXX_Unmarshal(b []byte) error {
@@ -1343,7 +2212,7 @@ func (m *VariableDescriptorProto) Reset()         { *m = VariableDescriptorProto
 func (m *VariableDescriptorProto) String() string { return proto.CompactTextString(m) }
 func (*VariableDescriptorProto) ProtoMessage()    {}
 func (*VariableDescriptorProto) Descriptor() ([]byte, []int) {
-	return fileDescriptor_b5c0692a5e3de09d, []int{19}
+	return fileDescriptor_b5c0692a5e3de09d, []int{30}
 }
 
 func (m *VariableDescriptorProto) XXX_Unmarshal(b []byte) error {
@@ -1382,7 +2251,7 @@ func (m *NullValueDescriptorProto) Reset()         { *m = NullValueDescriptorPro
 func (m *NullValueDescriptorProto) String() string { return proto.CompactTextString(m) }
 func (*NullValueDescriptorProto) ProtoMessage()    {}
 func (*NullValueDescriptorProto) Descriptor() ([]byte, []int) {
-	return fileDescriptor_b5c0692a5e3de09d, []int{20}
+	return fileDescriptor_b5c0692a5e3de09d, []int{31}
 }
 
 func (m *NullValueDescriptorProto) XXX_Unmarshal(b []byte) error {
@@ -1421,7 +2290,7 @@ func (m *EnumValueDescriptorProto) Reset()         { *m = EnumValueDescriptorPro
 func (m *EnumValueDescriptorProto) String() string { return proto.CompactTextString(m) }
 func (*EnumValueDescriptorProto) ProtoMessage()    {}
 func (*EnumValueDescriptorProto) Descriptor() ([]byte, []int) {
-	return fileDescriptor_b5c0692a5e3de09d, []int{21}
+	return fileDescriptor_b5c0692a5e3de09d, []int{32}
 }
 
 func (m *EnumValueDescriptorProto) XXX_Unmarshal(b []byte) error {
@@ -1460,7 +2329,7 @@ func (m *ListValueDescriptorProto) Reset()         { *m = ListValueDescriptorPro
 func (m *ListValueDescriptorProto) String() string { return proto.CompactTextString(m) }
 func (*ListValueDescriptorProto) ProtoMessage()    {}
 func (*ListValueDescriptorProto) Descriptor() ([]byte, []int) {
-	return fileDescriptor_b5c0692a5e3de09d, []int{22}
+	return fileDescriptor_b5c0692a5e3de09d, []int{33}
 }
 
 func (m *ListValueDescriptorProto) XXX_Unmarshal(b []byte) error {
@@ -1499,7 +2368,7 @@ func (m *ObjectValueDescriptorProto) Reset()         { *m = ObjectValueDescripto
 func (m *ObjectValueDescriptorProto) String() string { return proto.CompactTextString(m) }
 func (*ObjectValueDescriptorProto) ProtoMessage()    {}
 func (*ObjectValueDescriptorProto) Descriptor() ([]byte, []int) {
-	return fileDescriptor_b5c0692a5e3de09d, []int{23}
+	return fileDescriptor_b5c0692a5e3de09d, []int{34}
 }
 
 func (m *ObjectValueDescriptorProto) XXX_Unmarshal(b []byte) error {
@@ -1539,7 +2408,7 @@ func (m *ObjectFieldDescriptorProto) Reset()         { *m = ObjectFieldDescripto
 func (m *ObjectFieldDescriptorProto) String() string { return proto.CompactTextString(m) }
 func (*ObjectFieldDescriptorProto) ProtoMessage()    {}
 func (*ObjectFieldDescriptorProto) Descriptor() ([]byte, []int) {
-	return fileDescriptor_b5c0692a5e3de09d, []int{24}
+	return fileDescriptor_b5c0692a5e3de09d, []int{35}
 }
 
 func (m *ObjectFieldDescriptorProto) XXX_Unmarshal(b []byte) error {
@@ -1575,15 +2444,28 @@ func (m *ObjectFieldDescriptorProto) GetValue() *ValueDescriptorProto {
 }
 
 func init() {
+	proto.RegisterEnum("graphqlc.ExecutableDirectiveLocation", ExecutableDirectiveLocation_name, ExecutableDirectiveLocation_value)
+	proto.RegisterEnum("graphqlc.TypeSystemDirectiveLocation", TypeSystemDirectiveLocation_name, TypeSystemDirectiveLocation_value)
 	proto.RegisterType((*FileDescriptorSet)(nil), "graphqlc.FileDescriptorSet")
 	proto.RegisterType((*FileDescriptorGraphql)(nil), "graphqlc.FileDescriptorGraphql")
 	proto.RegisterType((*SchemaDescriptorProto)(nil), "graphqlc.SchemaDescriptorProto")
+	proto.RegisterType((*DirectiveDefinitionDescriptorProto)(nil), "graphqlc.DirectiveDefinitionDescriptorProto")
+	proto.RegisterType((*DirectiveLocationDescriptorProto)(nil), "graphqlc.DirectiveLocationDescriptorProto")
 	proto.RegisterType((*ScalarTypeDefinitionDescriptorProto)(nil), "graphqlc.ScalarTypeDefinitionDescriptorProto")
+	proto.RegisterType((*ScalarTypeExtensionDescriptorProto)(nil), "graphqlc.ScalarTypeExtensionDescriptorProto")
 	proto.RegisterType((*ObjectTypeDefinitionDescriptorProto)(nil), "graphqlc.ObjectTypeDefinitionDescriptorProto")
+	proto.RegisterType((*ObjectTypeExtensionDescriptorProto)(nil), "graphqlc.ObjectTypeExtensionDescriptorProto")
 	proto.RegisterType((*InterfaceTypeDefinitionDescriptorProto)(nil), "graphqlc.InterfaceTypeDefinitionDescriptorProto")
+	proto.RegisterType((*InterfaceTypeExtensionDescriptorProto)(nil), "graphqlc.InterfaceTypeExtensionDescriptorProto")
 	proto.RegisterType((*UnionTypeDefinitionDescriptorProto)(nil), "graphqlc.UnionTypeDefinitionDescriptorProto")
+	proto.RegisterType((*UnionTypeExtensionDefinitionDescriptorProto)(nil), "graphqlc.UnionTypeExtensionDefinitionDescriptorProto")
 	proto.RegisterType((*EnumTypeDefinitionDescriptorProto)(nil), "graphqlc.EnumTypeDefinitionDescriptorProto")
+	proto.RegisterType((*EnumTypeExtensionDefinitionDescriptorProto)(nil), "graphqlc.EnumTypeExtensionDefinitionDescriptorProto")
 	proto.RegisterType((*InputObjectTypeDefinitionDescriptorProto)(nil), "graphqlc.InputObjectTypeDefinitionDescriptorProto")
+	proto.RegisterType((*InputObjectTypeExtensionDefinitionDescriptorProto)(nil), "graphqlc.InputObjectTypeExtensionDefinitionDescriptorProto")
+	proto.RegisterType((*TypeSystemExtensionDescriptorProto)(nil), "graphqlc.TypeSystemExtensionDescriptorProto")
+	proto.RegisterType((*SchemaExtensionDescriptorProto)(nil), "graphqlc.SchemaExtensionDescriptorProto")
+	proto.RegisterType((*TypeExtensionDescriptorProto)(nil), "graphqlc.TypeExtensionDescriptorProto")
 	proto.RegisterType((*EnumValueDefinitionDescription)(nil), "graphqlc.EnumValueDefinitionDescription")
 	proto.RegisterType((*FieldDefinitionDescriptorProto)(nil), "graphqlc.FieldDefinitionDescriptorProto")
 	proto.RegisterType((*InputValueDefinitionDescriptorProto)(nil), "graphqlc.InputValueDefinitionDescriptorProto")
@@ -1605,75 +2487,117 @@ func init() {
 func init() { proto.RegisterFile("graphqlc/descriptor.proto", fileDescriptor_b5c0692a5e3de09d) }
 
 var fileDescriptor_b5c0692a5e3de09d = []byte{
-	// 1109 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xcc, 0x58, 0x4f, 0x8f, 0xdb, 0x44,
-	0x14, 0x5f, 0xe7, 0xdf, 0x26, 0x2f, 0x09, 0x12, 0x43, 0xab, 0x35, 0x95, 0xba, 0xec, 0x7a, 0x01,
-	0x45, 0x82, 0xcd, 0x96, 0x16, 0xe8, 0x01, 0x24, 0xda, 0xdd, 0x2d, 0xdd, 0x2d, 0x55, 0x29, 0x29,
-	0x14, 0xa9, 0x97, 0xc8, 0x49, 0x26, 0xd9, 0x81, 0xf1, 0x38, 0xb5, 0xc7, 0x8b, 0x96, 0xaf, 0xc1,
-	0x01, 0x09, 0x21, 0x71, 0x87, 0x23, 0x77, 0xbe, 0x0a, 0x17, 0x38, 0x71, 0xe1, 0x23, 0xa0, 0xf1,
-	0xcc, 0xd8, 0x8e, 0x63, 0x27, 0xae, 0x55, 0x69, 0xb9, 0x25, 0xf3, 0xde, 0xfb, 0xcd, 0x7b, 0xbf,
-	0xf7, 0x67, 0x66, 0x0c, 0xaf, 0xcf, 0x3c, 0x7b, 0x7e, 0xf6, 0x9c, 0x8e, 0x0f, 0x26, 0xd8, 0x1f,
-	0x7b, 0x64, 0xce, 0x5d, 0xaf, 0x3f, 0xf7, 0x5c, 0xee, 0xa2, 0xa6, 0x16, 0x59, 0x27, 0xf0, 0xea,
-	0xa7, 0x84, 0xe2, 0xe3, 0x48, 0xe3, 0x09, 0xe6, 0xe8, 0x16, 0xd4, 0xa6, 0x84, 0x62, 0xd3, 0xd8,
-	0xa9, 0xf6, 0xda, 0x37, 0xdf, 0xe8, 0x6b, 0xed, 0xfe, 0xa2, 0xea, 0x7d, 0xb9, 0x3c, 0x08, 0x95,
-	0xad, 0x5f, 0x6b, 0x70, 0x35, 0x53, 0x8e, 0x10, 0xd4, 0x98, 0xed, 0x08, 0x38, 0xa3, 0xd7, 0x1a,
-	0x84, 0xbf, 0xd1, 0x6d, 0x68, 0xf8, 0xe3, 0x33, 0xec, 0xd8, 0x66, 0x65, 0xc7, 0x58, 0xdc, 0xe4,
-	0x49, 0xb8, 0x1e, 0xc3, 0x3c, 0x16, 0x2e, 0x0f, 0x94, 0x3a, 0xba, 0x0f, 0x9b, 0xfe, 0xd8, 0xa6,
-	0xb6, 0xe7, 0x9b, 0xd5, 0xd0, 0xbd, 0xfd, 0xa4, 0xa5, 0x10, 0x7c, 0x79, 0x31, 0xc7, 0xc7, 0x78,
-	0x4a, 0x18, 0xe1, 0xc4, 0x65, 0x69, 0x1c, 0x6d, 0x2d, 0x80, 0xdc, 0xd1, 0x37, 0x78, 0xcc, 0x7d,
-	0xb3, 0x96, 0x06, 0xfa, 0x3c, 0x14, 0xac, 0x01, 0x52, 0xd6, 0xe8, 0x31, 0x00, 0x61, 0x1c, 0x7b,
-	0x53, 0x7b, 0x8c, 0x7d, 0xb3, 0x1e, 0x62, 0xdd, 0x88, 0xb1, 0x4e, 0xb5, 0x6c, 0x35, 0x5c, 0x02,
-	0x03, 0x1d, 0x43, 0x23, 0x60, 0xc4, 0x65, 0xbe, 0xd9, 0x08, 0xd1, 0xde, 0x8d, 0xd1, 0xbe, 0x12,
-	0xeb, 0xab, 0x91, 0x94, 0x2d, 0xba, 0x0b, 0x75, 0xcc, 0x02, 0xc7, 0x37, 0x37, 0x43, 0x90, 0x77,
-	0x62, 0x90, 0x7b, 0x2c, 0x70, 0x56, 0x63, 0x48, 0x4b, 0xf4, 0x35, 0x74, 0x09, 0x9b, 0x07, 0x7c,
-	0xa8, 0x99, 0x6a, 0x86, 0x50, 0x37, 0x93, 0xd1, 0xcd, 0x03, 0x5e, 0x84, 0xae, 0x0e, 0x89, 0x35,
-	0x7d, 0xeb, 0x8f, 0x0a, 0x5c, 0xcd, 0xcc, 0x33, 0x3a, 0x04, 0x98, 0x10, 0x0f, 0x8f, 0x39, 0x39,
-	0xc7, 0xbe, 0xaa, 0x40, 0x2b, 0xde, 0xef, 0x58, 0xcb, 0x96, 0xf8, 0x8b, 0xad, 0xd0, 0x11, 0xd4,
-	0x9f, 0x07, 0xd8, 0xbb, 0x50, 0xb5, 0xf5, 0x82, 0x89, 0x95, 0xb6, 0xe8, 0x14, 0x9a, 0x4e, 0xc0,
-	0x6d, 0xa1, 0x61, 0x56, 0xcb, 0xe0, 0x44, 0xe6, 0xe8, 0x0b, 0xe8, 0xf8, 0xc1, 0x48, 0x4a, 0x05,
-	0x5c, 0xad, 0x0c, 0xdc, 0x02, 0x84, 0xf5, 0x8b, 0x01, 0x7b, 0x05, 0xca, 0x1d, 0xed, 0x40, 0x5b,
-	0x77, 0xbf, 0xd8, 0x59, 0xb6, 0x60, 0x72, 0x29, 0xea, 0xce, 0x4a, 0xa2, 0x3b, 0x17, 0x93, 0x50,
-	0x2d, 0x93, 0x04, 0xeb, 0xf7, 0x0a, 0xec, 0x15, 0x88, 0xab, 0xa4, 0x87, 0xa2, 0xe9, 0x9c, 0x39,
-	0xc5, 0x0e, 0x66, 0x5c, 0x7b, 0x58, 0xa6, 0xe9, 0x22, 0x8c, 0x54, 0xcc, 0xb5, 0x52, 0x85, 0x77,
-	0x07, 0x1a, 0x53, 0x82, 0xe9, 0x44, 0x8f, 0x81, 0x5e, 0x72, 0x74, 0x62, 0x3a, 0x59, 0xd1, 0xb4,
-	0xd2, 0xce, 0xfa, 0xcb, 0x80, 0xb7, 0x8b, 0x39, 0x7f, 0x79, 0xa9, 0x4d, 0x84, 0x59, 0x2b, 0x19,
-	0xe6, 0xdf, 0x06, 0x58, 0xeb, 0x47, 0xd9, 0x25, 0x86, 0x78, 0x0f, 0x3a, 0x0e, 0x76, 0x46, 0xd8,
-	0x1b, 0xf2, 0x8b, 0x79, 0x56, 0x3d, 0x3c, 0xb2, 0x1d, 0x3c, 0x91, 0xde, 0x2f, 0xa2, 0xb4, 0xa5,
-	0x9d, 0x10, 0xf9, 0xd6, 0x9f, 0x06, 0xec, 0xae, 0x9d, 0xb6, 0x97, 0x9b, 0xc9, 0x73, 0x9b, 0x06,
-	0x38, 0x23, 0x93, 0xc2, 0xed, 0xa7, 0x42, 0xb6, 0xec, 0x37, 0x71, 0xd9, 0x40, 0xd9, 0x59, 0xff,
-	0x18, 0xd0, 0x2b, 0x7a, 0x08, 0x5c, 0x6a, 0x3e, 0x17, 0x4b, 0x76, 0x3f, 0x75, 0x84, 0xe5, 0x44,
-	0x9a, 0xae, 0xdb, 0x9f, 0x0d, 0xd8, 0x5e, 0x4d, 0x4c, 0x81, 0x18, 0xaf, 0x40, 0x3d, 0x24, 0x4f,
-	0x05, 0x29, 0xff, 0xbc, 0x94, 0x99, 0xfb, 0x53, 0x05, 0xb6, 0x57, 0x77, 0x60, 0xc9, 0x14, 0x7c,
-	0x06, 0x2d, 0xdb, 0x9b, 0x05, 0xc9, 0x69, 0xfb, 0x82, 0x0c, 0xc6, 0xf6, 0xe8, 0x3d, 0xa8, 0x89,
-	0xa6, 0x52, 0xc7, 0xe0, 0xf5, 0x18, 0x27, 0xab, 0x9d, 0x42, 0xd5, 0x14, 0x39, 0xf5, 0x52, 0xe4,
-	0xfc, 0x58, 0x81, 0xbd, 0x02, 0x9e, 0x96, 0x64, 0x48, 0x07, 0x55, 0x2d, 0x1e, 0xd4, 0x11, 0x74,
-	0x27, 0x78, 0x6a, 0x07, 0x94, 0x0f, 0x65, 0x3d, 0x48, 0x42, 0xb6, 0x63, 0x5b, 0xe5, 0x69, 0xea,
-	0x22, 0xa0, 0x8c, 0x9e, 0x66, 0x94, 0x4d, 0x39, 0x66, 0xfe, 0x35, 0xe0, 0xb5, 0x0c, 0x37, 0xd1,
-	0x11, 0x80, 0x88, 0x6d, 0x12, 0xce, 0xc0, 0x90, 0x88, 0x42, 0x23, 0xf0, 0x64, 0x63, 0xd0, 0x62,
-	0x5a, 0x86, 0xee, 0x40, 0x8b, 0x12, 0x9f, 0x4b, 0x0c, 0x79, 0x21, 0xdb, 0x8d, 0x31, 0x1e, 0x12,
-	0x9f, 0x67, 0x43, 0x34, 0xa9, 0x12, 0xa1, 0x07, 0xd0, 0x65, 0x2e, 0x1b, 0xb2, 0x80, 0xd2, 0x61,
-	0x82, 0xe3, 0x37, 0x13, 0x9e, 0xb8, 0xec, 0x51, 0x40, 0x69, 0x36, 0x50, 0x9b, 0xc5, 0xd2, 0xc3,
-	0x86, 0x4c, 0x93, 0xd5, 0x07, 0x33, 0xcf, 0xfd, 0xac, 0xf7, 0x8a, 0xf5, 0x10, 0xb6, 0x72, 0x5c,
-	0x8d, 0x32, 0x6f, 0x14, 0xce, 0xbc, 0xf5, 0x9b, 0x01, 0xd7, 0xf2, 0x7d, 0xfe, 0x9f, 0xf0, 0x1e,
-	0x71, 0xe5, 0x82, 0x99, 0x57, 0x46, 0x99, 0x6f, 0xbb, 0x4f, 0x92, 0xc3, 0xa2, 0x12, 0x56, 0x64,
-	0x62, 0xe7, 0xbb, 0x4a, 0x94, 0x3f, 0x20, 0xac, 0x31, 0x6c, 0xe5, 0x68, 0x65, 0xee, 0xf7, 0x7e,
-	0x72, 0x9e, 0xae, 0xef, 0x1f, 0xa9, 0x6c, 0xfd, 0x50, 0x83, 0x2b, 0x59, 0x72, 0xf4, 0x00, 0x5e,
-	0x39, 0xb7, 0x3d, 0x62, 0x8f, 0x28, 0x1e, 0x26, 0x71, 0x77, 0x93, 0xb8, 0x52, 0xbe, 0xcc, 0x5e,
-	0x57, 0x9b, 0xca, 0xee, 0xbc, 0x0e, 0x2d, 0xc2, 0x74, 0x7b, 0x8b, 0xb2, 0xad, 0x0b, 0x86, 0x09,
-	0x53, 0xcd, 0xbb, 0x0b, 0xed, 0x29, 0x75, 0xed, 0x64, 0xff, 0x57, 0x4e, 0x36, 0x06, 0x10, 0x2e,
-	0x4a, 0x95, 0xb7, 0xa0, 0x3b, 0x72, 0x5d, 0x8a, 0x6d, 0xa6, 0x94, 0xea, 0x3b, 0x46, 0xaf, 0x79,
-	0xb2, 0x31, 0xe8, 0xa8, 0x65, 0xa9, 0xb6, 0x07, 0x1d, 0x9f, 0x7b, 0x84, 0xcd, 0x94, 0x56, 0x43,
-	0xf0, 0x23, 0x8a, 0x5f, 0xae, 0x4a, 0x25, 0x51, 0x57, 0xa2, 0x89, 0xa4, 0xca, 0xe6, 0x52, 0x5d,
-	0x05, 0x94, 0x66, 0x31, 0x12, 0xd6, 0x95, 0x96, 0x09, 0x10, 0xf1, 0x38, 0x54, 0x20, 0xcd, 0x34,
-	0x48, 0xe2, 0x74, 0x5c, 0x02, 0xc1, 0x5a, 0x26, 0x40, 0xc2, 0xe2, 0x94, 0x20, 0xad, 0x34, 0x88,
-	0xa8, 0xce, 0x3c, 0x10, 0xaa, 0x65, 0xe8, 0x14, 0x3a, 0xf2, 0x5d, 0xaa, 0x60, 0x20, 0x3d, 0x16,
-	0xe4, 0x95, 0x24, 0x07, 0xa8, 0xed, 0xc6, 0xd2, 0xc3, 0x4d, 0x55, 0x42, 0xd6, 0x3e, 0x6c, 0xe5,
-	0x24, 0x37, 0x73, 0x2c, 0xdc, 0x00, 0x33, 0x8f, 0xb5, 0xf8, 0x98, 0x37, 0x12, 0xc7, 0xbc, 0xb0,
-	0xc8, 0xa3, 0x28, 0xc7, 0x62, 0x00, 0x66, 0x1e, 0x1f, 0xe8, 0xc3, 0xe8, 0xfe, 0x26, 0x5f, 0xca,
-	0xeb, 0x6a, 0x5f, 0xdf, 0xda, 0x9e, 0xc1, 0xb5, 0x7c, 0x72, 0xd0, 0xc7, 0xd1, 0x65, 0x49, 0xa2,
-	0x2e, 0x51, 0xaa, 0xee, 0x18, 0xd9, 0x77, 0xa4, 0xa9, 0xc6, 0xce, 0xd2, 0x7a, 0x79, 0x0d, 0x7c,
-	0x78, 0xfb, 0xd9, 0x07, 0x33, 0xc2, 0xcf, 0x82, 0x51, 0x7f, 0xec, 0x3a, 0x07, 0xbe, 0xed, 0x50,
-	0xc2, 0xdd, 0xef, 0x08, 0xff, 0xfe, 0x20, 0xfa, 0xf0, 0x35, 0xff, 0x76, 0x16, 0xfd, 0xf9, 0x48,
-	0xff, 0x18, 0x35, 0xc2, 0x8f, 0x60, 0xb7, 0xfe, 0x0b, 0x00, 0x00, 0xff, 0xff, 0x6d, 0xdc, 0x59,
-	0x9b, 0x21, 0x13, 0x00, 0x00,
+	// 1786 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xdc, 0x5a, 0xcd, 0x6f, 0x1b, 0xc7,
+	0x15, 0xd7, 0xf2, 0x4b, 0xe4, 0x13, 0x25, 0xd1, 0x23, 0xd9, 0xda, 0xca, 0xb5, 0x2a, 0xad, 0x6a,
+	0x43, 0x90, 0x6d, 0xc9, 0x9f, 0xf5, 0xc1, 0x05, 0x6a, 0x52, 0xa2, 0x44, 0xba, 0x14, 0x25, 0xaf,
+	0x44, 0xb7, 0xf6, 0x85, 0x5d, 0x92, 0x23, 0x79, 0xeb, 0xe5, 0x2e, 0xcd, 0xdd, 0x75, 0xad, 0xc2,
+	0x7f, 0x44, 0x81, 0x02, 0x2d, 0x10, 0x04, 0xc8, 0x1f, 0x90, 0x5b, 0x72, 0x0f, 0x90, 0x4b, 0x4e,
+	0x01, 0x02, 0xf8, 0x96, 0x53, 0x0e, 0x49, 0x4e, 0xb9, 0x24, 0xff, 0x41, 0x30, 0x33, 0xfb, 0xcd,
+	0x5d, 0x92, 0x5e, 0x38, 0x91, 0x91, 0xdb, 0x6a, 0xde, 0x7b, 0xbf, 0xf7, 0x31, 0xef, 0xbd, 0x79,
+	0x33, 0x22, 0xfc, 0xee, 0xa4, 0x2f, 0xf5, 0x9e, 0xbd, 0x50, 0xda, 0x9b, 0x1d, 0xac, 0xb7, 0xfb,
+	0x72, 0xcf, 0xd0, 0xfa, 0x1b, 0xbd, 0xbe, 0x66, 0x68, 0x28, 0x6b, 0x93, 0x84, 0x0a, 0x9c, 0xdb,
+	0x91, 0x15, 0xbc, 0xed, 0x70, 0x1c, 0x62, 0x03, 0xdd, 0x86, 0xd4, 0xb1, 0xac, 0x60, 0x9e, 0x5b,
+	0x4e, 0xae, 0x4d, 0xdd, 0xfa, 0xc3, 0x86, 0xcd, 0xbd, 0xe1, 0x67, 0xdd, 0x65, 0xcb, 0x22, 0x65,
+	0x16, 0xbe, 0x4a, 0xc3, 0xf9, 0x50, 0x3a, 0x42, 0x90, 0x52, 0xa5, 0x2e, 0x81, 0xe3, 0xd6, 0x72,
+	0x22, 0xfd, 0x46, 0xf7, 0x20, 0xa3, 0xb7, 0x9f, 0xe1, 0xae, 0xc4, 0x27, 0x96, 0x39, 0xbf, 0x92,
+	0x43, 0xba, 0xee, 0xc2, 0x1c, 0x10, 0x93, 0x45, 0x8b, 0x1d, 0x35, 0x60, 0xd6, 0x38, 0xed, 0xe1,
+	0x26, 0x7e, 0x65, 0x60, 0x55, 0x97, 0x35, 0x55, 0xe7, 0x81, 0x9a, 0x79, 0xcd, 0x45, 0x38, 0x3a,
+	0xed, 0xe1, 0xc3, 0x53, 0xdd, 0xc0, 0xdd, 0xb2, 0xcd, 0x15, 0x84, 0x9b, 0x21, 0x20, 0x0e, 0x55,
+	0x47, 0x35, 0x80, 0x8e, 0xdc, 0xc7, 0x6d, 0x43, 0x7e, 0x89, 0x75, 0x3e, 0x17, 0x44, 0xdc, 0xb6,
+	0x69, 0xdb, 0xf8, 0x58, 0x56, 0x65, 0x23, 0x04, 0xd1, 0x23, 0x8f, 0x76, 0x61, 0x52, 0x6f, 0x4b,
+	0x8a, 0xd4, 0xd7, 0xf9, 0x24, 0x85, 0xba, 0xee, 0x75, 0x8f, 0x10, 0x88, 0x89, 0xd1, 0x58, 0xb6,
+	0x34, 0x01, 0xd2, 0x5a, 0xff, 0xc4, 0x6d, 0x43, 0xe7, 0x53, 0x41, 0xa0, 0x7d, 0x4a, 0x18, 0x01,
+	0x64, 0x49, 0xa3, 0x03, 0x00, 0x59, 0x35, 0x70, 0xff, 0x58, 0x6a, 0x63, 0x9d, 0x4f, 0x53, 0xac,
+	0x1b, 0x2e, 0x56, 0xd5, 0xa6, 0x0d, 0x87, 0xf3, 0x60, 0xa0, 0x6d, 0xc8, 0x98, 0x2a, 0x8d, 0x7f,
+	0x26, 0x18, 0xad, 0x06, 0x59, 0x1f, 0x8e, 0x64, 0xc9, 0xa2, 0x22, 0xa4, 0xb1, 0x6a, 0x76, 0x75,
+	0x7e, 0x92, 0x82, 0x5c, 0x75, 0x41, 0xca, 0xaa, 0xd9, 0x1d, 0x8e, 0xc1, 0x24, 0xd1, 0xdf, 0x60,
+	0x5a, 0x56, 0x7b, 0xa6, 0xd1, 0xb4, 0x23, 0x95, 0xa5, 0x50, 0xb7, 0xbc, 0xde, 0xf5, 0x4c, 0x63,
+	0x9c, 0x70, 0xe5, 0x65, 0x97, 0x53, 0x17, 0x3e, 0x4b, 0xc0, 0xf9, 0xd0, 0x64, 0x44, 0x25, 0x5f,
+	0xb6, 0xb0, 0x32, 0x11, 0x42, 0xb3, 0x25, 0x3a, 0x47, 0xb6, 0x20, 0xfd, 0xc2, 0xc4, 0xfd, 0x53,
+	0xab, 0x00, 0xde, 0x72, 0x63, 0x99, 0x2c, 0xaa, 0x42, 0xb6, 0x6b, 0x1a, 0x12, 0xe1, 0xe0, 0x93,
+	0x71, 0x70, 0x1c, 0x71, 0xf4, 0x08, 0xf2, 0xba, 0xd9, 0x62, 0x54, 0x02, 0x97, 0x8a, 0x03, 0xe7,
+	0x83, 0x10, 0x7e, 0xe2, 0x40, 0x18, 0x5d, 0x39, 0x68, 0x19, 0xa6, 0xec, 0x0e, 0x45, 0x14, 0xb3,
+	0x36, 0xe1, 0x5d, 0x72, 0x3a, 0x48, 0xc2, 0xd3, 0x41, 0xfe, 0x0a, 0x39, 0xa9, 0x7f, 0x62, 0x76,
+	0xb1, 0x6a, 0x84, 0x54, 0x19, 0xdd, 0xf2, 0xc7, 0x92, 0x62, 0x0e, 0x31, 0xd6, 0x95, 0x47, 0x15,
+	0xc8, 0x29, 0x5a, 0x9b, 0x06, 0xc2, 0xae, 0xb4, 0xf5, 0x90, 0xfd, 0xac, 0x59, 0x3c, 0x03, 0x48,
+	0x8e, 0xb0, 0xf0, 0x2d, 0x07, 0xcb, 0xa3, 0xf8, 0xd1, 0xdf, 0x61, 0x0e, 0xbf, 0xc2, 0x6d, 0xd3,
+	0x90, 0x5a, 0x0a, 0x6e, 0xda, 0xc2, 0xd4, 0xbd, 0x99, 0x5b, 0x97, 0x3d, 0x35, 0xe0, 0x30, 0x0d,
+	0x40, 0x56, 0x26, 0x44, 0xe4, 0x62, 0xd8, 0xab, 0xe8, 0x09, 0xcc, 0xd3, 0xf6, 0xa8, 0xd3, 0xf6,
+	0xe7, 0x42, 0x27, 0x83, 0xd0, 0x6e, 0x8f, 0x0c, 0x85, 0x36, 0x1c, 0xb2, 0xbd, 0x5a, 0x02, 0xc8,
+	0xda, 0x70, 0xc2, 0x47, 0x1c, 0xac, 0x8e, 0xd1, 0xc8, 0x62, 0x6e, 0xad, 0xbf, 0xbc, 0x92, 0x71,
+	0xca, 0x4b, 0x78, 0x0d, 0x82, 0x6b, 0x60, 0xd4, 0x31, 0x10, 0x7a, 0x34, 0xf9, 0xb5, 0x27, 0x62,
+	0x69, 0xff, 0x34, 0x01, 0xab, 0x63, 0xd4, 0x4b, 0xcc, 0xf8, 0x90, 0x66, 0xde, 0xed, 0x29, 0xd8,
+	0x9b, 0xfb, 0x71, 0x9a, 0xb9, 0x83, 0x11, 0xf0, 0x39, 0x15, 0xab, 0xa1, 0x3d, 0x80, 0xcc, 0xb1,
+	0x8c, 0x95, 0x8e, 0x7d, 0xbc, 0xac, 0x79, 0xe7, 0x06, 0xac, 0x74, 0x86, 0x1c, 0x06, 0x4c, 0x4e,
+	0xf8, 0x4f, 0x02, 0x04, 0x37, 0x6a, 0x6f, 0xb5, 0x69, 0xbf, 0xd5, 0x90, 0x7c, 0xc7, 0xc1, 0x95,
+	0xf1, 0x8c, 0x3f, 0xbb, 0x5a, 0xf3, 0xb8, 0x99, 0x8a, 0xe9, 0xe6, 0xe7, 0x1c, 0x5c, 0xf6, 0xb9,
+	0xf9, 0x6b, 0x57, 0xac, 0xc7, 0x87, 0x64, 0x4c, 0x1f, 0xbe, 0xe7, 0x40, 0x18, 0x3d, 0xf9, 0x9c,
+	0xe1, 0x36, 0x95, 0x21, 0xdf, 0xc5, 0xdd, 0x16, 0xee, 0x37, 0x49, 0x77, 0x0f, 0xc9, 0xe9, 0xba,
+	0xd4, 0xc5, 0x1d, 0x66, 0xbd, 0x1f, 0x65, 0x8a, 0xc9, 0x11, 0x92, 0x2e, 0x7c, 0xc9, 0xc1, 0x55,
+	0xc7, 0x4f, 0xcf, 0x3e, 0x45, 0x39, 0xfc, 0x4b, 0xed, 0x58, 0xd0, 0x9d, 0x64, 0x3c, 0x77, 0xbe,
+	0xe1, 0x60, 0x65, 0xe4, 0xac, 0x79, 0xb6, 0xc5, 0xf5, 0x92, 0xcc, 0x31, 0x21, 0xc5, 0x45, 0xcc,
+	0x8e, 0x98, 0x71, 0x64, 0x4d, 0x15, 0x2d, 0x39, 0xe1, 0x0b, 0x0e, 0xd6, 0x6d, 0x0f, 0xcf, 0x70,
+	0xbf, 0x5c, 0x47, 0x92, 0x31, 0x1d, 0xf9, 0x81, 0x83, 0xb5, 0x71, 0x67, 0xf9, 0x33, 0xad, 0x33,
+	0x7f, 0x3b, 0x7c, 0xcb, 0xb1, 0xd4, 0xee, 0x27, 0x6f, 0x38, 0xb8, 0x19, 0xf0, 0xf6, 0x4c, 0xab,
+	0xcd, 0xdf, 0x1f, 0x63, 0x3a, 0xf5, 0x35, 0x07, 0xc2, 0xe8, 0xeb, 0x39, 0x6a, 0x40, 0x81, 0xdd,
+	0xf7, 0xdd, 0x7b, 0x3e, 0xf5, 0xc8, 0x97, 0x35, 0xec, 0x6e, 0x16, 0x85, 0x51, 0x99, 0x10, 0x67,
+	0x75, 0x3f, 0x07, 0xda, 0x87, 0x19, 0xff, 0xe3, 0x81, 0x75, 0xf9, 0xba, 0xe2, 0x9f, 0x8b, 0x87,
+	0x40, 0x4e, 0xfb, 0xde, 0x0d, 0x4a, 0x53, 0x90, 0x73, 0xb0, 0x48, 0x9d, 0x2d, 0x0d, 0xb7, 0xe9,
+	0x9d, 0x5c, 0x1c, 0xff, 0x01, 0x8b, 0x5a, 0x0f, 0xf7, 0xe9, 0x20, 0x4e, 0x5b, 0x5f, 0xb3, 0xe3,
+	0x84, 0x3d, 0x64, 0x77, 0x23, 0xbb, 0x20, 0xef, 0xa0, 0xf8, 0x0b, 0x49, 0x17, 0x3e, 0x49, 0xc3,
+	0xef, 0x87, 0x1e, 0xc2, 0x2d, 0x38, 0xcf, 0x5e, 0x28, 0x9a, 0x81, 0x70, 0xb2, 0x3d, 0xba, 0x16,
+	0xf6, 0xda, 0x31, 0x24, 0xa8, 0x73, 0xfa, 0x20, 0x17, 0xd1, 0xc1, 0x2e, 0xf4, 0xcd, 0xd0, 0x2d,
+	0xbb, 0x16, 0x76, 0x31, 0x1d, 0xa6, 0x43, 0x1b, 0xe4, 0x42, 0xcf, 0x81, 0x77, 0x5e, 0x34, 0x82,
+	0x6a, 0xd8, 0x75, 0x7a, 0x33, 0x62, 0x86, 0x1c, 0xa2, 0xe9, 0x82, 0x1c, 0xca, 0x88, 0x64, 0x98,
+	0xa7, 0x8f, 0x1e, 0x41, 0x45, 0xec, 0xa2, 0x7d, 0x37, 0xe4, 0xf9, 0x64, 0x74, 0xb9, 0x93, 0xab,
+	0x9a, 0x39, 0xc0, 0x8e, 0x5a, 0x70, 0x0e, 0xab, 0x66, 0xd7, 0xd1, 0x44, 0x33, 0x23, 0x4d, 0xf5,
+	0xdc, 0x19, 0x7c, 0x61, 0x19, 0x4b, 0xcd, 0x2c, 0x76, 0xb9, 0xe9, 0xcb, 0xcd, 0x6b, 0xb8, 0xe8,
+	0x7d, 0x76, 0x09, 0x7a, 0x95, 0xa1, 0xda, 0xee, 0x47, 0x3e, 0xc2, 0x8c, 0xa5, 0x94, 0x97, 0x23,
+	0x84, 0x4a, 0x85, 0x60, 0x25, 0x0b, 0x1f, 0x72, 0xb0, 0x34, 0xfc, 0x1c, 0x19, 0xe3, 0x48, 0x98,
+	0x87, 0x34, 0x3d, 0x6b, 0xac, 0x33, 0x81, 0xfd, 0xf1, 0x4e, 0xee, 0xa3, 0x1f, 0x24, 0x60, 0x69,
+	0xf8, 0x20, 0xf9, 0x3e, 0xbc, 0x83, 0xdc, 0x84, 0x14, 0x09, 0xab, 0x95, 0x93, 0x97, 0xfc, 0x6d,
+	0x31, 0x28, 0x47, 0x59, 0x03, 0xc1, 0x49, 0xc7, 0x0a, 0xce, 0xff, 0x13, 0xb0, 0x3a, 0x86, 0xa5,
+	0x31, 0x23, 0x64, 0x3b, 0x95, 0x1c, 0xdf, 0xa9, 0x2d, 0x98, 0xee, 0xe0, 0x63, 0xc9, 0x54, 0x8c,
+	0x26, 0xcb, 0x07, 0x16, 0x90, 0x25, 0x57, 0xd6, 0xb2, 0x34, 0xf0, 0xfc, 0x65, 0x09, 0x3d, 0x0e,
+	0x49, 0x9b, 0x78, 0x91, 0xf9, 0x91, 0x83, 0xb9, 0x10, 0x33, 0xd1, 0x16, 0x00, 0xf1, 0xad, 0x43,
+	0xcb, 0xce, 0x6a, 0xbb, 0x63, 0x34, 0xfd, 0xca, 0x84, 0x98, 0x53, 0x6d, 0x1a, 0x7a, 0x00, 0x39,
+	0x45, 0xd6, 0x59, 0xe9, 0x5a, 0x6d, 0x75, 0xc5, 0xc5, 0xa8, 0xc9, 0xba, 0x11, 0x0e, 0x91, 0x55,
+	0x2c, 0x12, 0x7a, 0x08, 0xd3, 0xaa, 0xa6, 0x36, 0x55, 0x53, 0x51, 0x9a, 0x9e, 0x18, 0xff, 0xd1,
+	0x63, 0x89, 0xa6, 0xd6, 0x4d, 0x45, 0x09, 0x07, 0x9a, 0x52, 0x5d, 0x6a, 0x29, 0xc3, 0xb6, 0x49,
+	0xd8, 0x00, 0x3e, 0xca, 0xfc, 0xb0, 0xe9, 0x46, 0xa8, 0xc1, 0x42, 0x84, 0xa9, 0xce, 0xce, 0x73,
+	0x63, 0xef, 0xbc, 0xf0, 0x31, 0x07, 0x8b, 0xd1, 0x36, 0xbf, 0x27, 0x71, 0x77, 0x62, 0xa5, 0x01,
+	0x1f, 0x95, 0x46, 0xa1, 0x93, 0xe0, 0x5f, 0xbc, 0xcd, 0x82, 0x8d, 0x0a, 0x1e, 0xcd, 0x45, 0x8b,
+	0x14, 0xdd, 0x20, 0x84, 0x36, 0x2c, 0x44, 0x70, 0x85, 0xea, 0xbb, 0xe3, 0xed, 0xa7, 0xa3, 0xeb,
+	0x87, 0x31, 0x0b, 0xff, 0x4d, 0xc1, 0x7c, 0x18, 0x1d, 0x3d, 0x84, 0x99, 0x97, 0x52, 0x5f, 0xa6,
+	0xaf, 0xa6, 0x5e, 0xdc, 0x15, 0x2f, 0x2e, 0xa3, 0x87, 0x8c, 0x6e, 0xb6, 0x28, 0xab, 0xce, 0x4b,
+	0x90, 0x93, 0x55, 0xbb, 0xbc, 0x49, 0xda, 0xa6, 0x49, 0x84, 0x65, 0xd5, 0x2a, 0xde, 0x15, 0x98,
+	0x3a, 0x56, 0x34, 0xc9, 0x5b, 0xff, 0x89, 0xca, 0x84, 0x08, 0x74, 0x91, 0xb1, 0x5c, 0x86, 0xe9,
+	0x96, 0xa6, 0x29, 0x58, 0x52, 0x2d, 0x26, 0x72, 0xc2, 0x66, 0x2b, 0x13, 0x62, 0xde, 0x5a, 0x66,
+	0x6c, 0xab, 0x90, 0xd7, 0x8d, 0xbe, 0xac, 0x9e, 0x58, 0x5c, 0xe4, 0x64, 0xcc, 0x91, 0xe4, 0x67,
+	0xab, 0x8c, 0x89, 0xe4, 0x15, 0x29, 0x22, 0xc6, 0x32, 0x39, 0x90, 0x57, 0xa6, 0xa2, 0x84, 0x45,
+	0x84, 0xe6, 0x95, 0x4d, 0x23, 0x20, 0xf4, 0xd8, 0x67, 0x20, 0xd9, 0x20, 0x88, 0xe7, 0x74, 0x1c,
+	0x00, 0xc1, 0x36, 0x8d, 0x80, 0xd0, 0xe4, 0x64, 0x20, 0xb9, 0x20, 0x08, 0xc9, 0xce, 0x28, 0x10,
+	0xc5, 0xa6, 0xa1, 0x2a, 0xe4, 0xad, 0xb1, 0x80, 0xc1, 0x40, 0xb0, 0x2d, 0xb0, 0x33, 0x3d, 0x02,
+	0x68, 0x4a, 0x73, 0xa9, 0xa5, 0x49, 0x2b, 0x85, 0x84, 0xeb, 0xb0, 0x10, 0xb1, 0xb9, 0xa1, 0x6d,
+	0xe1, 0x06, 0xf0, 0x51, 0x51, 0x73, 0x8f, 0x79, 0xce, 0x73, 0xcc, 0x13, 0x89, 0xa8, 0x10, 0x45,
+	0x48, 0x88, 0xc0, 0x47, 0xc5, 0x03, 0xfd, 0xc9, 0xb9, 0xee, 0xb2, 0x31, 0x7f, 0x54, 0xee, 0xdb,
+	0x97, 0xdc, 0xa7, 0xb0, 0x18, 0x1d, 0x1c, 0xf4, 0x67, 0xe7, 0x1a, 0xc6, 0x50, 0x07, 0x42, 0x6a,
+	0xcd, 0x18, 0xe1, 0xb7, 0xaf, 0x63, 0x1b, 0x3b, 0x8c, 0xeb, 0xdd, 0x15, 0xf0, 0xfa, 0xff, 0x38,
+	0xb8, 0x38, 0xe4, 0x7f, 0x17, 0x28, 0x07, 0xe9, 0x47, 0x8d, 0xb2, 0xf8, 0xa4, 0x30, 0x81, 0xf2,
+	0x90, 0xdd, 0x6b, 0x1c, 0x15, 0x8f, 0xaa, 0xfb, 0xf5, 0x02, 0x87, 0x0a, 0x90, 0x3f, 0x6c, 0x94,
+	0x0e, 0xb7, 0xc4, 0xea, 0x01, 0x5d, 0x49, 0x10, 0xd6, 0x9d, 0x6a, 0xb9, 0xb6, 0x5d, 0x48, 0xa2,
+	0x05, 0x98, 0xdb, 0x11, 0x8b, 0xbb, 0x7b, 0xe5, 0xfa, 0x51, 0x73, 0xbb, 0xbc, 0x53, 0xad, 0x57,
+	0x29, 0x4f, 0x0a, 0xcd, 0xc1, 0xac, 0x43, 0x38, 0x3c, 0x10, 0xcb, 0xc5, 0xed, 0x42, 0x9a, 0x2c,
+	0x56, 0xeb, 0xb5, 0x6a, 0xbd, 0xdc, 0xb4, 0x69, 0x85, 0xcc, 0xfa, 0x1b, 0x0e, 0x2e, 0x0e, 0xf9,
+	0xcf, 0x07, 0x02, 0xc8, 0x1c, 0x6e, 0x55, 0xca, 0x7b, 0xc5, 0xc2, 0x04, 0xfb, 0x2e, 0xd6, 0x8a,
+	0x62, 0x81, 0x23, 0xdf, 0xfb, 0xa5, 0x87, 0xe5, 0xad, 0xa3, 0x42, 0x02, 0xcd, 0x43, 0x81, 0x5a,
+	0xe4, 0xb5, 0x81, 0x1a, 0x57, 0x14, 0x77, 0x1b, 0x83, 0xc6, 0x4d, 0x43, 0xae, 0x5a, 0x3f, 0x2a,
+	0x8b, 0x3b, 0xc5, 0xad, 0x72, 0x21, 0x4d, 0xfc, 0x69, 0xd4, 0x09, 0x25, 0x83, 0xb2, 0x90, 0x2a,
+	0xd7, 0x1b, 0x7b, 0x85, 0x49, 0x34, 0x03, 0x40, 0xbe, 0x9a, 0x8f, 0x8b, 0xb5, 0x46, 0xb9, 0x90,
+	0x25, 0x61, 0xa8, 0xd6, 0x0f, 0x1a, 0x47, 0x4d, 0x4b, 0x69, 0x0e, 0x2d, 0xc2, 0x05, 0xb6, 0x32,
+	0xa0, 0x1a, 0x4a, 0xf7, 0x9e, 0xde, 0x3d, 0x91, 0x8d, 0x67, 0x66, 0x6b, 0xa3, 0xad, 0x75, 0x37,
+	0x75, 0xa9, 0xab, 0xc8, 0x86, 0xf6, 0x2f, 0xd9, 0xf8, 0xf7, 0xa6, 0xf3, 0x0b, 0x80, 0xde, 0xf3,
+	0x13, 0xe7, 0x8f, 0xfb, 0xf6, 0x47, 0x2b, 0x43, 0x7f, 0x0d, 0x70, 0xfb, 0xe7, 0x00, 0x00, 0x00,
+	0xff, 0xff, 0x75, 0x17, 0xf7, 0xa3, 0x2a, 0x20, 0x00, 0x00,
 }

@@ -10,7 +10,6 @@ require (
 	github.com/mitchellh/mapstructure v0.0.0-20180203102830-a4e142e9c047
 	github.com/opentracing/opentracing-go v1.0.2
 	github.com/rs/cors v1.6.0
-	github.com/samlitowitz/graphqlc v0.0.0-20190519163807-d79fc433bbfb
 	github.com/stretchr/testify v1.3.0
 	github.com/vektah/gqlparser v1.1.2
 	sourcegraph.com/sourcegraph/appdash v0.0.0-20180110180208-2cc67fd64755

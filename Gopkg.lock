@@ -129,7 +129,7 @@
     "pkg/graphqlc",
     "pkg/graphqlc/compiler"
   ]
-  revision = "f2f1d80a9e0eaffb075cfbe3d056f0bcd44ee4b6"
+  revision = "ba49409a7deb3557f9dd39eca1df893662b1d8d0"
 
 [[projects]]
   branch = "master"
@@ -219,6 +219,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "efbeacef4fda737adbb6daf6adef14284c86de2b95bf3c2cc6c9a3524d527bd7"
+  inputs-digest = "47d4a1a95bfc68a29b0a7da83e35554cc0047a8e9ce075bbd24fc90bad9610ea"
   solver-name = "gps-cdcl"
   solver-version = 1
